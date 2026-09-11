@@ -350,6 +350,12 @@ button{cursor:pointer}
 .csv-help{font-size:11px;line-height:1.4;color:#776a92;margin-bottom:9px}
 .csv-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 13px;border-radius:11px;background:#eee3ff;color:#6517c9;font-size:12px;font-weight:900;cursor:pointer}
 .csv-import-box .admin-status{margin-top:8px}
+
+.sensi-mode{display:flex;gap:7px;margin-top:10px;overflow-x:auto;padding-bottom:2px}
+.sensi-mode-btn{flex:1;min-width:88px;border:1px solid #dcc9f4;background:#fff;color:#5f3a7d;border-radius:10px;padding:9px 8px;font-size:11px;font-weight:900;cursor:pointer;white-space:nowrap}
+.sensi-mode-btn.active{background:#7a19e8;color:#fff;border-color:#7a19e8;box-shadow:0 4px 10px #7a19e825}
+.sensi-mode-note{font-size:10px;color:#81738f;margin:6px 1px 0;line-height:1.35}
+.result-mode{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:7px;background:#f0e6ff;color:#6a16c8;font-size:9px;font-weight:900}
 </style>
 </head>
 <body>
@@ -392,6 +398,12 @@ button{cursor:pointer}
      <input id="device" autocomplete="off" placeholder="Ej. Samsung A54, Redmi Note 12..." onkeydown="if(event.key==='Enter')buscar()">
      <button onclick="buscar()">⌕</button>
    </div>
+   <div class="sensi-mode" aria-label="Modo de sensibilidad">
+     <button class="sensi-mode-btn active" id="modeNoDpi" onclick="setSensiMode('no-dpi',this)">📱 Sin DPI</button>
+     <button class="sensi-mode-btn" id="modeDpi" onclick="setSensiMode('dpi',this)">⚡ Con DPI</button>
+     <button class="sensi-mode-btn" id="modeBoth" onclick="setSensiMode('both',this)">🔄 Ambas</button>
+   </div>
+   <div class="sensi-mode-note">Elige si quieres una configuración usando solo Free Fire o una que también incluya DPI.</div>
    <div class="chips">
      <button class="chip" onclick="setDevice('Samsung A54')">Samsung A54</button>
      <button class="chip" onclick="setDevice('Redmi Note 12')">Redmi Note 12</button>
@@ -564,7 +576,7 @@ button{cursor:pointer}
   <div id="admin-sensi" class="admin-view active">
    <div class="form-grid">
     <div class="field"><label>Modelo</label><input id="aModel" placeholder="Ej. Redmi Note 13"></div>
-    <div class="field"><label>DPI</label><input id="aDpi" placeholder="Ej. 500"></div>
+    <div class="field"><label>DPI <small>(opcional)</small></label><input id="aDpi" placeholder="Ej. 500 · vacío = sin DPI"></div>
     <div class="field"><label>General</label><input id="aGeneral" type="number" min="0" max="200" value="190"></div>
     <div class="field"><label>Punto rojo</label><input id="aRed" type="number" min="0" max="200" value="188"></div>
     <div class="field"><label>Mira 2x</label><input id="a2x" type="number" min="0" max="200" value="185"></div>
@@ -575,7 +587,7 @@ button{cursor:pointer}
    <div class="admin-actions"><button class="admin-btn" onclick="addSensi()">＋ Guardar sensibilidad</button></div>
    <div class="csv-import-box">
     <div class="csv-title">📄 Agregar varias de golpe</div>
-    <div class="csv-help">Selecciona un archivo CSV con: Modelo, DPI, General, Red, 2x, 4x, AWM, Fire.</div>
+    <div class="csv-help">Selecciona un CSV con: Modelo, DPI, General, Red, 2x, 4x, AWM, Fire. Deja DPI vacío para una configuración sin DPI.</div>
     <label class="csv-btn" for="sensiCsvInput">📄 Seleccionar CSV</label>
     <input id="sensiCsvInput" type="file" accept=".csv,text/csv" onchange="importSensiCsv(event)" hidden>
     <div id="sensiImportStatus" class="admin-status"></div>
@@ -761,44 +773,77 @@ function toast(msg){
  clearTimeout(window._t); window._t=setTimeout(()=>el.classList.remove('show'),2200);
 }
 const sensitivities = [
-  {keys:['samsung a54','a54'], name:'Samsung Galaxy A54', general:190, red:188, x2:185, x4:178, awm:92, dpi:520, fire:48},
-  {keys:['redmi note 12','note 12'], name:'Redmi Note 12', general:195, red:193, x2:188, x4:180, awm:94, dpi:480, fire:47},
-  {keys:['poco x5 pro','x5 pro'], name:'POCO X5 Pro', general:200, red:198, x2:192, x4:184, awm:96, dpi:520, fire:49},
-  {keys:['iphone 13'], name:'iPhone 13', general:185, red:183, x2:180, x4:172, awm:90, dpi:'N/A', fire:46},
-  {keys:['samsung a34','a34'], name:'Samsung Galaxy A34', general:188, red:186, x2:182, x4:175, awm:91, dpi:500, fire:47},
-  {keys:['tecno pova 5','pova 5'], name:'TECNO POVA 5', general:195, red:192, x2:187, x4:179, awm:93, dpi:480, fire:48}
+  {keys:['samsung a54','a54'], name:'Samsung Galaxy A54', general:175, red:170, x2:155, x4:135, awm:93, dpi:'N/A', fire:50},
+  {keys:['samsung a54','a54'], name:'Samsung Galaxy A54', general:178, red:173, x2:158, x4:138, awm:92, dpi:500, fire:50},
+  {keys:['redmi note 12','note 12'], name:'Redmi Note 12', general:178, red:173, x2:158, x4:138, awm:95, dpi:'N/A', fire:50},
+  {keys:['redmi note 12','note 12'], name:'Redmi Note 12', general:180, red:175, x2:160, x4:140, awm:94, dpi:500, fire:50},
+  {keys:['poco x5 pro','x5 pro'], name:'POCO X5 Pro', general:176, red:171, x2:156, x4:136, awm:92, dpi:'N/A', fire:49},
+  {keys:['poco x5 pro','x5 pro'], name:'POCO X5 Pro', general:180, red:175, x2:160, x4:140, awm:90, dpi:520, fire:49},
+  {keys:['iphone 13'], name:'iPhone 13', general:170, red:165, x2:150, x4:130, awm:90, dpi:'N/A', fire:48},
+  {keys:['samsung a34','a34'], name:'Samsung Galaxy A34', general:172, red:167, x2:152, x4:132, awm:92, dpi:'N/A', fire:49},
+  {keys:['samsung a34','a34'], name:'Samsung Galaxy A34', general:176, red:171, x2:156, x4:136, awm:90, dpi:500, fire:49},
+  {keys:['tecno pova 5','pova 5'], name:'TECNO POVA 5', general:180, red:175, x2:160, x4:140, awm:94, dpi:'N/A', fire:50},
+  {keys:['tecno pova 5','pova 5'], name:'TECNO POVA 5', general:184, red:179, x2:164, x4:144, awm:92, dpi:500, fire:50}
 ];
 
+let sensiMode='no-dpi';
+function setSensiMode(mode,btn){
+  sensiMode=mode;
+  document.querySelectorAll('.sensi-mode-btn').forEach(x=>x.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const input=document.getElementById('device');
+  if(input && input.value.trim())buscar();
+}
 function setDevice(value){
  document.getElementById('device').value=value;
  buscar();
 }
-function buscar(){
+async function buscar(){
  const input=document.getElementById('device');
  const result=document.getElementById('result');
  const value=input.value.trim().toLowerCase();
  if(!value){result.hidden=false;result.innerHTML='<div class="no-result">Escribe el modelo de tu teléfono para buscar una configuración.</div>';return;}
- const item=sensitivities.find(x=>x.keys.some(k=>value.includes(k)||k.includes(value)));
+ let pool=[...sensitivities];
+ try{
+   const {data,error}=await supabaseClient.from('sensitivities').select('*').order('created_at',{ascending:false}).limit(200);
+   if(!error && Array.isArray(data) && data.length){
+     pool=[...data,...sensitivities];
+   }
+ }catch(e){ console.warn('No se pudo consultar sensibilidades públicas',e); }
+ const matches=pool.filter(x=>{
+   const keys=Array.isArray(x.keys)&&x.keys.length?x.keys:[String(x.name||'').toLowerCase()];
+   const nameMatch=keys.some(k=>String(k).toLowerCase().includes(value)||value.includes(String(k).toLowerCase())) || String(x.name||'').toLowerCase().includes(value);
+   if(!nameMatch)return false;
+   const hasDpi=String(x.dpi??'').trim() && String(x.dpi).trim().toLowerCase()!=='n/a';
+   return sensiMode==='both' ? true : sensiMode==='dpi' ? hasDpi : !hasDpi;
+ });
  result.hidden=false;
- if(!item){
-   result.innerHTML='<div class="no-result"><b>No encontramos ese modelo todavía.</b><br>Prueba con Samsung A54, Redmi Note 12, POCO X5 Pro, iPhone 13, Samsung A34 o TECNO POVA 5.</div>';
-   toast('Modelo no encontrado');
+ if(!matches.length){
+   const modeText=sensiMode==='dpi'?'con DPI':sensiMode==='no-dpi'?'sin DPI':'en ambos modos';
+   result.innerHTML='<div class="no-result"><b>No encontramos '+esc(input.value)+' '+modeText+'.</b><br>Prueba otro modelo o cambia entre Sin DPI, Con DPI y Ambas.</div>';
+   toast('Configuración no encontrada');
    return;
  }
- result.innerHTML = `
-   <div class="result-title"><b>🎯 ${item.name}</b><span class="score">RECOMENDADA</span></div>
-   <div class="stats">
-     <div class="stat"><span>General</span><b>${item.general}</b></div>
-     <div class="stat"><span>Punto rojo</span><b>${item.red}</b></div>
-     <div class="stat"><span>Mira 2x</span><b>${item.x2}</b></div>
-     <div class="stat"><span>Mira 4x</span><b>${item.x4}</b></div>
-     <div class="stat"><span>AWM</span><b>${item.awm}</b></div>
-     <div class="stat"><span>DPI</span><b>${item.dpi}</b></div>
-     <div class="stat"><span>Botón disparo</span><b>${item.fire}%</b></div>
-   </div>
-   <p class="result-note">💜 Configuración inicial de Rezzentidos. Ajusta de 2–5 puntos según tu estilo, FPS y tamaño de pantalla.</p>
- `;
- toast('Sensibilidad encontrada');
+ const list=matches.slice(0,3);
+ result.innerHTML=list.map(item=>{
+   const hasDpi=String(item.dpi??'').trim() && String(item.dpi).trim().toLowerCase()!=='n/a';
+   return `
+   <div class="result-card" style="margin-bottom:10px">
+    <div class="result-title"><b>🎯 ${esc(item.name)}</b><span class="score">RECOMENDADA</span></div>
+    <span class="result-mode">${hasDpi?'⚡ CON DPI':'📱 SIN DPI'}</span>
+    <div class="stats">
+      <div class="stat"><span>General</span><b>${item.general}</b></div>
+      <div class="stat"><span>Punto rojo</span><b>${item.red}</b></div>
+      <div class="stat"><span>Mira 2x</span><b>${item.x2}</b></div>
+      <div class="stat"><span>Mira 4x</span><b>${item.x4}</b></div>
+      <div class="stat"><span>AWM</span><b>${item.awm}</b></div>
+      <div class="stat"><span>DPI</span><b>${hasDpi?esc(item.dpi):'No usar'}</b></div>
+      <div class="stat"><span>Botón disparo</span><b>${item.fire}%</b></div>
+    </div>
+    <p class="result-note">💜 Configuración inicial de Rezzentidos. Ajusta de 2–5 puntos según tu estilo, FPS y tamaño de pantalla.</p>
+   </div>`;
+ }).join('');
+ toast(matches.length>1?'Encontramos varias configuraciones':'Sensibilidad encontrada');
 }
 
 let adminSession=null;
