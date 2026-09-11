@@ -432,7 +432,7 @@ button{cursor:pointer}
    <h2>👥 Comunidad Rezzentidos</h2>
    <button class="close-panel" onclick="closeCommunity()">×</button>
   </div>
-  <p style="color:#75698c;font-size:12px;line-height:1.4">Comparte un consejo o configuración desde tu teléfono. Las publicaciones de esta versión se guardan en este dispositivo.</p>
+  <p style="color:#75698c;font-size:12px;line-height:1.4">Comparte un consejo o configuración desde tu teléfono. Las publicaciones se guardan en la comunidad pública y todos pueden verlas.</p>
   <div class="form-grid">
    <div class="field"><label>Tu nombre</label><input id="communityName" placeholder="Ej. Ale"></div>
    <div class="field"><label>Teléfono / modelo</label><input id="communityModel" placeholder="Ej. Redmi Note 12"></div>
@@ -443,7 +443,7 @@ button{cursor:pointer}
    <button class="admin-btn secondary" onclick="shareSite()">📤 Compartir Rezzentidos</button>
   </div>
   <div id="communityPosts" class="community-posts"></div>
-  <div class="helper">ℹ️ Para que la comunidad sea realmente pública entre todos los usuarios, después habría que conectar un servidor/base de datos. Esta versión ya permite probar las publicaciones localmente.</div>
+  <div class="helper">ℹ️ Los consejos publicados aquí son públicos. No compartas teléfonos, contraseñas ni datos personales.</div>
  </section>
 </div>
 
@@ -502,7 +502,12 @@ button{cursor:pointer}
 
 <div id="toast" class="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL = "https://pcnwaljenfnvdnoxvrbt.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Y6n28NpaKd2uKOvkEPuhfA_pk6UgGPF";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
 function go(id){
  const el=document.getElementById(id);
  if(el) el.scrollIntoView({behavior:'smooth'});
@@ -583,23 +588,35 @@ function shareSite(){
  else if(navigator.clipboard){navigator.clipboard.writeText(location.href);toast('Enlace copiado');}
  else toast(location.href);
 }
-function addCommunityPost(){
+async function addCommunityPost(){
  const name=document.getElementById('communityName').value.trim()||'Jugador';
  const model=document.getElementById('communityModel').value.trim()||'Free Fire';
  const text=document.getElementById('communityText').value.trim();
  if(!text){toast('Escribe un consejo');return;}
- const posts=JSON.parse(localStorage.getItem('rezzentidos_community')||'[]');
- posts.unshift({name,model,text,date:new Date().toLocaleDateString('es-EC')});
- localStorage.setItem('rezzentidos_community',JSON.stringify(posts.slice(0,30)));
+ if(name.length>40 || model.length>60 || text.length>500){toast('Reduce el texto: nombre 40, modelo 60, consejo 500 caracteres');return;}
+ const button=document.querySelector('#communityOverlay .community-actions .admin-btn');
+ if(button){button.disabled=true;button.textContent='Publicando…';}
+ const {error}=await supabaseClient.from('community_posts').insert({name,model,text});
+ if(button){button.disabled=false;button.textContent='＋ Publicar';}
+ if(error){console.error(error);toast('No se pudo publicar. Revisa la conexión.');return;}
  document.getElementById('communityText').value='';
- renderCommunityPosts();
- toast('Consejo publicado');
+ await renderCommunityPosts();
+ toast('Consejo publicado para toda la comunidad 💜');
 }
-function renderCommunityPosts(){
+async function renderCommunityPosts(){
  const box=document.getElementById('communityPosts');
  if(!box)return;
- const posts=JSON.parse(localStorage.getItem('rezzentidos_community')||'[]');
- box.innerHTML=posts.length?posts.map(p=>`<article class="community-post"><b>💜 ${esc(p.name)} · ${esc(p.model)}</b><small style="display:block;color:#8a7c9e;margin-top:3px">${esc(p.date)}</small><p>${esc(p.text)}</p></article>`).join(''):'<div class="no-result">Todavía no hay consejos guardados en este dispositivo.</div>';
+ box.innerHTML='<div class="no-result">Cargando consejos…</div>';
+ const {data:posts,error}=await supabaseClient.from('community_posts').select('id,created_at,name,model,text').order('created_at',{ascending:false}).limit(50);
+ if(error){
+  console.error(error);
+  box.innerHTML='<div class="no-result">No se pudieron cargar los consejos. Intenta de nuevo.</div>';
+  return;
+ }
+ box.innerHTML=posts.length?posts.map(p=>{
+   const date=p.created_at?new Date(p.created_at).toLocaleDateString('es-EC'):'Ahora';
+   return `<article class="community-post"><b>💜 ${esc(p.name)} · ${esc(p.model)}</b><small style="display:block;color:#8a7c9e;margin-top:3px">${esc(date)}</small><p>${esc(p.text)}</p></article>`;
+ }).join(''):'<div class="no-result">Todavía no hay consejos publicados. ¡Sé el primero! 💜</div>';
 }
 function renderPublicCodes(){
  const box=document.getElementById('publicCodes');
