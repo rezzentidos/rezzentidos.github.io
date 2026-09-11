@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#16052e">
+<meta name="description" content="Rezzentidos — Free Fire, sensibilidades, noticias, códigos y configuraciones.">
+<title>Rezzentidos | Free Fire</title>
+<style>
+:root{
+  --purple:#741cff; --purple2:#b33cff; --dark:#16052e; --ink:#211044;
+  --soft:#f7f3ff; --line:#e7dcff; --white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:#f8f6fc;color:var(--ink);
+  font-family:Arial,Helvetica,sans-serif;
+  padding-bottom:78px;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.top{
+  position:sticky;top:0;z-index:20;
+  background:linear-gradient(135deg,#17052e,#351064);
+  color:white;padding:12px 16px 10px;
+  box-shadow:0 4px 18px #19052e33;
+}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+
+.logo{font-size:25px;font-weight:900;font-style:italic;letter-spacing:-1.5px;white-space:nowrap}
+.logo span{color:#bd69ff}
+.icon-btn{
+  border:0;background:#ffffff14;color:white;border-radius:13px;
+  width:43px;height:43px;font-size:22px;
+}
+.hero{
+  margin:10px 10px 0;border-radius:20px;overflow:hidden;
+  min-height:270px;color:white;position:relative;
+  background:
+    radial-gradient(circle at 78% 35%,#b53dff 0,#6519d8 23%,transparent 48%),
+    linear-gradient(135deg,#18052f,#4a0e99 60%,#1d0738);
+  box-shadow:0 12px 30px #3d087e40;
+}
+.hero:after{
+  content:"";position:absolute;inset:auto -60px -110px auto;width:260px;height:260px;
+  background:#d45cff55;border-radius:50%;filter:blur(15px)
+}
+.hero-content{position:relative;z-index:2;padding:25px 20px;max-width:610px}
+.badge{display:inline-block;background:#a832ff;border:1px solid #d99aff;padding:6px 12px;border-radius:999px;font-weight:800;font-size:12px}
+.hero h1{font-size:42px;line-height:.94;margin:12px 0 8px;font-style:italic}
+.hero p{margin:0 0 17px;color:#f0e9ff;line-height:1.45}
+.cta{
+  border:0;border-radius:12px;padding:13px 18px;font-weight:900;color:white;
+  background:linear-gradient(90deg,#a52cff,#6412e8);
+  box-shadow:0 8px 18px #7d1dff66;
+}
+.shortcuts{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:7px;
+  margin:10px;padding:10px;background:white;border-radius:17px;
+  box-shadow:0 3px 15px #24104c14;
+}
+.shortcut{border:0;background:white;color:var(--ink);padding:9px 3px;border-radius:12px}
+.shortcut:active{background:#f1e9ff}
+.shortcut .ico{font-size:25px;display:block;margin-bottom:5px}
+.shortcut b{font-size:11px}
+.container{max-width:900px;margin:auto;padding:0 10px}
+.section{margin:22px 0}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:0 3px 11px}
+.section-head h2{font-size:20px;margin:0}
+.link{border:0;background:transparent;color:#6815dc;font-weight:800;font-size:12px}
+.news-main{
+  background:linear-gradient(135deg,#19052f,#4d0c9e);color:white;
+  border-radius:17px;padding:18px;min-height:185px;position:relative;overflow:hidden
+}
+.news-main:before{content:"";position:absolute;width:170px;height:170px;right:-40px;top:-30px;border-radius:50%;background:#bb43ff66}
+.tag{display:inline-block;background:#9e2cff;color:white;border-radius:7px;padding:5px 8px;font-size:10px;font-weight:900}
+.news-main h3{font-size:22px;max-width:620px;margin:11px 0 8px}
+.news-main p{max-width:620px;color:#eee2ff;line-height:1.4;font-size:13px}
+.news-list{display:grid;gap:9px;margin-top:9px}
+.news-item{
+  background:white;border:1px solid var(--line);border-radius:14px;padding:13px;
+  display:flex;align-items:center;gap:12px;box-shadow:0 3px 12px #24104c0b
+}
+.news-thumb{width:58px;height:58px;border-radius:12px;background:linear-gradient(135deg,#5b13c9,#d054ff);display:grid;place-items:center;font-size:27px;flex:none}
+.news-item b{font-size:14px;line-height:1.25}.news-item small{display:block;margin-top:6px;color:#776a92}
+.sensi{
+  background:linear-gradient(135deg,#4e0a9b,#8c21ed);color:white;border-radius:18px;padding:17px;
+  box-shadow:0 8px 22px #741cff35
+}
+.sensi h2{margin:0 0 5px}.sensi p{margin:0 0 14px;color:#eee3ff;font-size:13px}
+.search{display:flex;background:white;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.search input{flex:1;border:0;padding:13px;outline:none;min-width:0;color:var(--ink)}
+.search button{width:50px;border:0;background:#7019e8;color:white;font-size:20px}
+.chips{display:flex;gap:8px;overflow:auto;padding-bottom:3px}
+.chip{white-space:nowrap;border:1px solid #ffffff55;background:#ffffff;color:#5a13bd;border-radius:999px;padding:9px 13px;font-weight:800;font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.card{
+  background:white;border:1px solid var(--line);border-radius:15px;padding:16px;
+  box-shadow:0 3px 12px #24104c0b
+}
+.card .big{font-size:29px}.card h3{font-size:15px;margin:8px 0 4px}.card p{font-size:12px;color:#75698c;margin:0 0 12px;line-height:1.35}
+.small-btn{border:0;background:#7119e8;color:white;border-radius:9px;padding:9px 11px;font-size:11px;font-weight:900}
+.codes{
+  background:linear-gradient(135deg,#22053e,#7118d9);color:white;border-radius:17px;padding:19px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;overflow:hidden
+}
+.codes h3{margin:0 0 7px;font-size:18px}.codes p{margin:0;color:#eadbff;font-size:12px}
+.diamond{font-size:62px;filter:drop-shadow(0 8px 10px #d06aff66)}
+.bottom{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:#17052e;color:#d9c8ff;border-top:1px solid #8f4cff55;
+  display:grid;grid-template-columns:repeat(5,1fr);padding:7px 5px max(7px,env(safe-area-inset-bottom));
+}
+.nav{border:0;background:transparent;color:#cdb9ed;font-size:10px;font-weight:800;padding:5px 2px}
+.nav span{display:block;font-size:21px;margin-bottom:3px}.nav.active{color:white}.nav.active span{filter:drop-shadow(0 0 7px #b63cff)}
+.toast{
+ position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);
+ background:#21073f;color:white;padding:12px 16px;border-radius:12px;
+ opacity:0;pointer-events:none;transition:.25s;z-index:50;font-size:13px;
+ box-shadow:0 8px 25px #0004
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.result{
+  margin-top:13px;background:white;color:var(--ink);border-radius:15px;padding:15px;
+  box-shadow:0 5px 20px #25074c25;border:1px solid #eadcff;
+}
+.result-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.result-title b{font-size:17px}.score{font-size:10px;background:#eee2ff;color:#6815dc;padding:5px 8px;border-radius:999px;font-weight:900}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stat{background:#f8f5ff;border-radius:11px;padding:10px}.stat span{display:block;color:#76698d;font-size:10px;margin-bottom:4px}.stat b{font-size:15px;color:#5410b7}
+.result-note{font-size:11px;color:#75698c;margin:10px 0 0;line-height:1.35}
+.no-result{font-size:12px;color:#5e536f;line-height:1.4}
+.admin-overlay{
+ position:fixed;inset:0;background:#120323dd;z-index:100;display:none;
+ align-items:flex-start;justify-content:center;padding:20px 10px;overflow:auto
+}
+.admin-overlay.open{display:flex}
+.admin-panel{
+ width:min(720px,100%);background:#fff;border-radius:20px;padding:18px;
+ box-shadow:0 20px 60px #0008;color:var(--ink);margin:auto
+}
+.admin-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
+.admin-head h2{margin:0;font-size:20px}.close-admin{border:0;background:#f0e7ff;color:#5810b7;border-radius:10px;width:40px;height:40px;font-size:20px}
+.admin-tabs{display:flex;gap:7px;overflow:auto;margin-bottom:15px}
+.admin-tab{white-space:nowrap;border:1px solid var(--line);background:#fff;color:#5c18b5;border-radius:999px;padding:9px 13px;font-weight:800;font-size:12px}
+.admin-tab.active{background:#7119e8;color:#fff}
+.admin-view{display:none}.admin-view.active{display:block}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}
+.field label{font-size:11px;font-weight:800;color:#625477}.field input,.field textarea,.field select{
+ border:1px solid #dfd2f4;border-radius:10px;padding:11px;outline:none;color:var(--ink);background:#fcfaff
+}
+.field textarea{min-height:80px;resize:vertical}
+.admin-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.admin-btn{border:0;border-radius:10px;padding:10px 14px;background:#7119e8;color:white;font-weight:900;font-size:12px}
+.admin-btn.secondary{background:#eee5ff;color:#5a12b5}
+.admin-list{display:grid;gap:8px;margin-top:12px}
+.admin-item{border:1px solid var(--line);border-radius:12px;padding:11px;background:#fcfaff;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.admin-item b{font-size:13px}.admin-item small{display:block;color:#786b8e;margin-top:3px}
+.admin-delete{border:0;background:#ffe8f0;color:#a30b45;border-radius:8px;padding:7px 9px;font-weight:800;font-size:11px}
+.admin-note{background:#f5edff;border-radius:11px;padding:10px;font-size:11px;line-height:1.4;color:#665575;margin-bottom:12px}
+@media(min-width:700px){
+ body{padding-bottom:0}.bottom{position:static;max-width:900px;margin:20px auto;border-radius:18px}
+ .shortcuts{max-width:880px;margin:10px auto}
+ .hero{max-width:880px;margin:10px auto 0;min-height:320px}
+ .hero h1{font-size:60px}.hero-content{padding:40px}
+ .news-list{grid-template-columns:repeat(3,1fr)}
+ .cards{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="topbar">
+    <button class="icon-btn" aria-label="Menú" onclick="toast('Menú próximamente')">☰</button>
+    <div class="brand"><div class="logo">Rezz<span>entidos</span></div></div>
+    <div style="display:flex;gap:7px">
+      <button class="icon-btn" aria-label="Buscar" onclick="document.getElementById('device').focus()">⌕</button>
+      <button class="icon-btn" aria-label="Administración" onclick="openAdmin()">⚙</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="inicio">
+  <div class="hero-content">
+    <span class="badge">FREE FIRE</span>
+    <h1>Bienvenido a<br>Rezzentidos</h1>
+    <p>Tu portal de Free Fire para sensibilidades, noticias, códigos, configuraciones y comunidad.</p>
+    <button class="cta" onclick="document.getElementById('sensibilidades').scrollIntoView()">Explorar ahora →</button>
+  </div>
+</section>
+
+<nav class="shortcuts" aria-label="Categorías">
+  <button class="shortcut" onclick="go('sensibilidades')"><span class="ico">🎯</span><b>Sensibilidades</b></button>
+  <button class="shortcut" onclick="go('noticias')"><span class="ico">📰</span><b>Noticias</b></button>
+  <button class="shortcut" onclick="go('codigos')"><span class="ico">🎁</span><b>Códigos</b></button>
+  <button class="shortcut" onclick="go('configuraciones')"><span class="ico">⚙️</span><b>Configuraciones</b></button>
+  <button class="shortcut" onclick="toast('La comunidad estará disponible próximamente')"><span class="ico">👥</span><b>Comunidad</b></button>
+</nav>
+
+<div class="container">
+
+<section class="section" id="noticias">
+ <div class="section-head"><h2>📰 Últimas noticias</h2><button class="link" onclick="toast('Mostrando todas las noticias')">Ver todas →</button></div>
+ <article class="news-main">
+   <span class="tag">NUEVA ACTUALIZACIÓN</span>
+   <h3>Todo lo que debes saber de Free Fire</h3>
+   <p>Noticias, eventos, novedades y cambios importantes. Aquí podrás publicar las novedades de Rezzentidos.</p>
+   <small>📅 Hoy · 💬 Comunidad Rezzentidos</small>
+ </article>
+ <div class="news-list">
+   <article class="news-item"><div class="news-thumb">🎮</div><div><b>Eventos y recompensas</b><small>Descubre las novedades del juego.</small></div></article>
+   <article class="news-item"><div class="news-thumb">🔫</div><div><b>Nuevas skins y armas</b><small>Las novedades que no te quieres perder.</small></div></article>
+   <article class="news-item"><div class="news-thumb">💎</div><div><b>Códigos de recompensa</b><small>Revisa los códigos publicados.</small></div></article>
+ </div>
+</section>
+
+<section class="section" id="sensibilidades">
+ <div class="section-head"><h2>🎯 Sensibilidades</h2><button class="link" onclick="toast('Más sensibilidades próximamente')">Ver todas →</button></div>
+ <div class="sensi">
+   <h2>Encuentra tu sensibilidad</h2>
+   <p>Escribe tu teléfono y Rezzentidos buscará una configuración recomendada.</p>
+   <div class="search">
+     <input id="device" autocomplete="off" placeholder="Ej. Samsung A54, Redmi Note 12..." onkeydown="if(event.key==='Enter')buscar()">
+     <button onclick="buscar()">⌕</button>
+   </div>
+   <div class="chips">
+     <button class="chip" onclick="setDevice('Samsung A54')">Samsung A54</button>
+     <button class="chip" onclick="setDevice('Redmi Note 12')">Redmi Note 12</button>
+     <button class="chip" onclick="setDevice('iPhone 13')">iPhone 13</button>
+     <button class="chip" onclick="setDevice('Poco X5 Pro')">Poco X5 Pro</button>
+   </div>
+   <div id="result" class="result" hidden></div>
+ </div>
+ <div class="cards" style="margin-top:10px">
+   <article class="card"><div class="big">🤖</div><h3>Android</h3><p>Sensibilidades recomendadas para Android.</p><button class="small-btn" onclick="setDevice('Android')">Buscar →</button></article>
+   <article class="card"><div class="big"></div><h3>iPhone</h3><p>Ajustes para mejorar tu puntería.</p><button class="small-btn" onclick="setDevice('iPhone')">Buscar →</button></article>
+   <article class="card"><div class="big">📱</div><h3>Por modelo</h3><p>Busca una configuración específica.</p><button class="small-btn" onclick="document.getElementById('device').focus()">Buscar →</button></article>
+   <article class="card"><div class="big">🎯</div><h3>Sensibilidad para rojo</h3><p>Consejos para mejorar el control.</p><button class="small-btn" onclick="toast('Guía de rojo próximamente')">Ver guía →</button></article>
+ </div>
+</section>
+
+<section class="section" id="codigos">
+ <div class="section-head"><h2>🎁 Códigos de Free Fire</h2><button class="link" onclick="toast('Sección de códigos próximamente')">Ver todos →</button></div>
+ <div class="codes">
+   <div><h3>Canjea códigos y consigue recompensas</h3><p>Diamantes, skins y mucho más.</p><br><button class="cta" onclick="toast('Los códigos se agregarán próximamente')">Ver códigos →</button></div>
+   <div class="diamond">💎</div>
+ </div>
+</section>
+
+<section class="section" id="configuraciones">
+ <div class="section-head"><h2>⚙️ Configuraciones</h2><button class="link" onclick="toast('Más guías próximamente')">Ver todas →</button></div>
+ <div class="cards">
+   <article class="card"><div class="big">🎛️</div><h3>HUD</h3><p>Diseños y layouts recomendados.</p><button class="small-btn" onclick="toast('Guía HUD próximamente')">Ver guía →</button></article>
+   <article class="card"><div class="big">🎯</div><h3>DPI</h3><p>Mejora tu precisión en el juego.</p><button class="small-btn" onclick="toast('Guía DPI próximamente')">Ver guía →</button></article>
+   <article class="card"><div class="big">🖥️</div><h3>Gráficos</h3><p>Ajustes para mejorar rendimiento.</p><button class="small-btn" onclick="toast('Guía de gráficos próximamente')">Ver guía →</button></article>
+   <article class="card"><div class="big">⚙️</div><h3>Ajustes generales</h3><p>Configuraciones para tu estilo.</p><button class="small-btn" onclick="toast('Guía de ajustes próximamente')">Ver guía →</button></article>
+ </div>
+</section>
+
+<section class="section">
+ <div class="news-main" style="min-height:auto">
+   <span class="tag">COMUNIDAD</span>
+   <h3>💜 Únete a Rezzentidos</h3>
+   <p>Comparte tus sensibilidades, consejos y experiencias con otros jugadores.</p>
+   <button class="cta" onclick="toast('La comunidad estará disponible próximamente')">Entrar ahora →</button>
+ </div>
+</section>
+
+</div>
+</main>
+
+<nav class="bottom" aria-label="Navegación inferior">
+ <button class="nav active" onclick="go('inicio')"><span>⌂</span>Inicio</button>
+ <button class="nav" onclick="go('sensibilidades')"><span>🎯</span>Sensis</button>
+ <button class="nav" onclick="go('noticias')"><span>📰</span>Noticias</button>
+ <button class="nav" onclick="go('codigos')"><span>🎁</span>Códigos</button>
+ <button class="nav" onclick="toast('Comunidad próximamente')"><span>👥</span>Comunidad</button>
+</nav>
+
+
+<div id="adminOverlay" class="admin-overlay" aria-hidden="true">
+ <section class="admin-panel">
+  <div class="admin-head">
+   <h2>⚙️ Panel de Rezzentidos</h2>
+   <button class="close-admin" onclick="closeAdmin()">×</button>
+  </div>
+  <div class="admin-note">
+   Este panel funciona en este navegador y guarda los cambios en <b>localStorage</b>.
+   Para un sitio público necesitarás después un servidor, base de datos y autenticación real.
+  </div>
+  <div class="admin-tabs">
+   <button class="admin-tab active" onclick="adminTab('sensi',this)">🎯 Sensibilidades</button>
+   <button class="admin-tab" onclick="adminTab('news',this)">📰 Noticias</button>
+   <button class="admin-tab" onclick="adminTab('codes',this)">🎁 Códigos</button>
+  </div>
+
+  <div id="admin-sensi" class="admin-view active">
+   <div class="form-grid">
+    <div class="field"><label>Modelo</label><input id="aModel" placeholder="Ej. Redmi Note 13"></div>
+    <div class="field"><label>DPI</label><input id="aDpi" placeholder="Ej. 500"></div>
+    <div class="field"><label>General</label><input id="aGeneral" type="number" min="0" max="200" value="190"></div>
+    <div class="field"><label>Punto rojo</label><input id="aRed" type="number" min="0" max="200" value="188"></div>
+    <div class="field"><label>Mira 2x</label><input id="a2x" type="number" min="0" max="200" value="185"></div>
+    <div class="field"><label>Mira 4x</label><input id="a4x" type="number" min="0" max="200" value="178"></div>
+    <div class="field"><label>AWM</label><input id="aAwm" type="number" min="0" max="200" value="92"></div>
+    <div class="field"><label>Botón de disparo %</label><input id="aFire" type="number" min="0" max="100" value="48"></div>
+   </div>
+   <div class="admin-actions"><button class="admin-btn" onclick="addSensi()">＋ Guardar sensibilidad</button></div>
+   <div id="sensiAdminList" class="admin-list"></div>
+  </div>
+
+  <div id="admin-news" class="admin-view">
+   <div class="form-grid">
+    <div class="field full"><label>Título</label><input id="aNewsTitle" placeholder="Título de la noticia"></div>
+    <div class="field"><label>Categoría</label><input id="aNewsTag" placeholder="NOVEDADES"></div>
+    <div class="field"><label>Fecha</label><input id="aNewsDate" type="date"></div>
+    <div class="field full"><label>Resumen</label><textarea id="aNewsText" placeholder="Escribe un resumen corto..."></textarea></div>
+   </div>
+   <div class="admin-actions"><button class="admin-btn" onclick="addNews()">＋ Publicar noticia</button></div>
+   <div id="newsAdminList" class="admin-list"></div>
+  </div>
+
+  <div id="admin-codes" class="admin-view">
+   <div class="form-grid">
+    <div class="field"><label>Código</label><input id="aCode" placeholder="Ej. ABCD-1234-EFGH"></div>
+    <div class="field"><label>Recompensa</label><input id="aReward" placeholder="Recompensa"></div>
+   </div>
+   <div class="admin-actions"><button class="admin-btn" onclick="addCode()">＋ Guardar código</button></div>
+   <div id="codesAdminList" class="admin-list"></div>
+  </div>
+ </section>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+function toast(msg){
+ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
+ clearTimeout(window._t); window._t=setTimeout(()=>el.classList.remove('show'),2200);
+}
+const sensitivities = [
+  {keys:['samsung a54','a54'], name:'Samsung Galaxy A54', general:190, red:188, x2:185, x4:178, awm:92, dpi:520, fire:48},
+  {keys:['redmi note 12','note 12'], name:'Redmi Note 12', general:195, red:193, x2:188, x4:180, awm:94, dpi:480, fire:47},
+  {keys:['poco x5 pro','x5 pro'], name:'POCO X5 Pro', general:200, red:198, x2:192, x4:184, awm:96, dpi:520, fire:49},
+  {keys:['iphone 13'], name:'iPhone 13', general:185, red:183, x2:180, x4:172, awm:90, dpi:'N/A', fire:46},
+  {keys:['samsung a34','a34'], name:'Samsung Galaxy A34', general:188, red:186, x2:182, x4:175, awm:91, dpi:500, fire:47},
+  {keys:['tecno pova 5','pova 5'], name:'TECNO POVA 5', general:195, red:192, x2:187, x4:179, awm:93, dpi:480, fire:48}
+];
+
+function setDevice(value){
+ document.getElementById('device').value=value;
+ buscar();
+}
+function buscar(){
+ const input=document.getElementById('device');
+ const result=document.getElementById('result');
+ const value=input.value.trim().toLowerCase();
+ if(!value){result.hidden=false;result.innerHTML='<div class="no-result">Escribe el modelo de tu teléfono para buscar una configuración.</div>';return;}
+ const item=sensitivities.find(x=>x.keys.some(k=>value.includes(k)||k.includes(value)));
+ result.hidden=false;
+ if(!item){
+   result.innerHTML='<div class="no-result"><b>No encontramos ese modelo todavía.</b><br>Prueba con Samsung A54, Redmi Note 12, POCO X5 Pro, iPhone 13, Samsung A34 o TECNO POVA 5.</div>';
+   toast('Modelo no encontrado');
+   return;
+ }
+ result.innerHTML = `
+   <div class="result-title"><b>🎯 ${item.name}</b><span class="score">RECOMENDADA</span></div>
+   <div class="stats">
+     <div class="stat"><span>General</span><b>${item.general}</b></div>
+     <div class="stat"><span>Punto rojo</span><b>${item.red}</b></div>
+     <div class="stat"><span>Mira 2x</span><b>${item.x2}</b></div>
+     <div class="stat"><span>Mira 4x</span><b>${item.x4}</b></div>
+     <div class="stat"><span>AWM</span><b>${item.awm}</b></div>
+     <div class="stat"><span>DPI</span><b>${item.dpi}</b></div>
+     <div class="stat"><span>Botón disparo</span><b>${item.fire}%</b></div>
+   </div>
+   <p class="result-note">💜 Configuración inicial de Rezzentidos. Ajusta de 2–5 puntos según tu estilo, FPS y tamaño de pantalla.</p>
+ `;
+ toast('Sensibilidad encontrada');
+}
+
+let adminData = JSON.parse(localStorage.getItem('rezzentidos_admin') || '{"sensi":[],"news":[],"codes":[]}');
+
+function saveAdmin(){localStorage.setItem('rezzentidos_admin',JSON.stringify(adminData));}
+function openAdmin(){
+ document.getElementById('adminOverlay').classList.add('open');
+ document.getElementById('adminOverlay').setAttribute('aria-hidden','false');
+ renderAdmin();
+}
+function closeAdmin(){
+ document.getElementById('adminOverlay').classList.remove('open');
+ document.getElementById('adminOverlay').setAttribute('aria-hidden','true');
+}
+function adminTab(name,btn){
+ document.querySelectorAll('.admin-view').forEach(x=>x.classList.remove('active'));
+ document.getElementById('admin-'+name).classList.add('active');
+ document.querySelectorAll('.admin-tab').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');
+}
+function esc(v){
+ return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function addSensi(){
+ const model=document.getElementById('aModel').value.trim();
+ if(!model){toast('Escribe el modelo');return;}
+ adminData.sensi.unshift({
+  name:model,keys:[model.toLowerCase()],general:+aGeneral.value,red:+aRed.value,
+  x2:+a2x.value,x4:+a4x.value,awm:+aAwm.value,dpi:aDpi.value.trim()||'N/A',fire:+aFire.value
+ });
+ sensitivities.unshift(adminData.sensi[0]);
+ saveAdmin();renderAdmin();document.getElementById('aModel').value='';toast('Sensibilidad guardada');
+}
+function addNews(){
+ const title=aNewsTitle.value.trim(), text=aNewsText.value.trim();
+ if(!title){toast('Escribe un título');return;}
+ adminData.news.unshift({title,tag:aNewsTag.value.trim()||'NOVEDADES',date:aNewsDate.value||'Hoy',text});
+ saveAdmin();renderAdmin();aNewsTitle.value='';aNewsText.value='';toast('Noticia guardada');
+}
+function addCode(){
+ const code=aCode.value.trim(), reward=aReward.value.trim();
+ if(!code){toast('Escribe un código');return;}
+ adminData.codes.unshift({code,reward:reward||'Recompensa de Free Fire'});
+ saveAdmin();renderAdmin();aCode.value='';aReward.value='';toast('Código guardado');
+}
+function del(type,index){
+ adminData[type].splice(index,1);saveAdmin();renderAdmin();toast('Elemento eliminado');
+}
+function renderAdmin(){
+ sensiAdminList.innerHTML=adminData.sensi.length?adminData.sensi.map((x,i)=>
+  `<div class="admin-item"><div><b>🎯 ${esc(x.name)}</b><small>General ${x.general} · Rojo ${x.red} · DPI ${esc(x.dpi)}</small></div><button class="admin-delete" onclick="del('sensi',${i})">Eliminar</button></div>`).join('')
+  :'<div class="no-result">Aún no has agregado sensibilidades.</div>';
+ newsAdminList.innerHTML=adminData.news.length?adminData.news.map((x,i)=>
+  `<div class="admin-item"><div><b>📰 ${esc(x.title)}</b><small>${esc(x.tag)} · ${esc(x.date)}</small></div><button class="admin-delete" onclick="del('news',${i})">Eliminar</button></div>`).join('')
+  :'<div class="no-result">Aún no has publicado noticias.</div>';
+ codesAdminList.innerHTML=adminData.codes.length?adminData.codes.map((x,i)=>
+  `<div class="admin-item"><div><b>🎁 ${esc(x.code)}</b><small>${esc(x.reward)}</small></div><button class="admin-delete" onclick="del('codes',${i})">Eliminar</button></div>`).join('')
+  :'<div class="no-result">Aún no has agregado códigos.</div>';
+}
+
+</script>
+</body>
+</html>
