@@ -260,6 +260,25 @@ button{cursor:pointer}
   .info-panel,.menu-panel{padding:16px}
 }
 
+
+/* Noticias tipo portal */
+.news-main,.news-item{cursor:pointer}
+.news-main.has-image{overflow:hidden}
+.news-cover{width:100%;height:180px;object-fit:cover;border-radius:16px;margin:-2px 0 14px;display:block}
+.news-read{display:inline-block;margin-top:10px;font-weight:900;color:#b98cff}
+.news-article-modal{position:fixed;inset:0;z-index:9999;display:none}
+.news-article-modal.open{display:block}
+.news-article-backdrop{position:absolute;inset:0;background:rgba(5,3,15,.82);backdrop-filter:blur(5px)}
+.news-article-panel{position:relative;width:min(760px,calc(100% - 24px));max-height:90vh;overflow:auto;margin:5vh auto;background:#171022;border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:18px;box-shadow:0 20px 70px rgba(0,0,0,.5)}
+.news-article-panel .modal-close{position:absolute;right:12px;top:10px}
+.news-article-image{width:100%;max-height:360px;object-fit:cover;border-radius:18px;margin:8px 0 18px}
+.news-article-body{white-space:pre-wrap;line-height:1.75;color:#ddd}
+.news-article-meta{color:#a99db8;font-size:.88rem;margin:7px 0 16px}
+.news-empty-image{padding:14px;border:1px dashed rgba(255,255,255,.12);border-radius:14px;color:#aaa}
+.news-admin-image-preview{max-width:100%;max-height:160px;border-radius:14px;margin-top:8px;display:none}
+.news-file-label{display:flex;align-items:center;justify-content:center;min-height:48px;border:1px dashed rgba(185,140,255,.5);border-radius:12px;padding:10px;cursor:pointer}
+.news-file-label input{display:none}
+
 </style>
 </head>
 <body>
@@ -356,6 +375,14 @@ button{cursor:pointer}
   <span class="social-float-r">R</span>
   <span class="social-float-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.2"></circle><circle cx="18" cy="6" r="2.2"></circle><circle cx="18" cy="18" r="2.2"></circle><path d="M8 11l7.8-4M8 13l7.8 4"></path></svg></span>
 </button>
+
+<div class="news-article-modal" id="newsArticleModal" aria-hidden="true">
+  <div class="news-article-backdrop" onclick="closeNewsArticle()"></div>
+  <div class="news-article-panel">
+    <button class="modal-close" aria-label="Cerrar" onclick="closeNewsArticle()">×</button>
+    <div id="newsArticleContent"></div>
+  </div>
+</div>
 
 <div class="social-modal" id="socialModal" aria-hidden="true">
   <div class="social-modal-backdrop" onclick="closeSocials()"></div>
@@ -496,7 +523,14 @@ button{cursor:pointer}
     <div class="field full"><label>Título</label><input id="aNewsTitle" placeholder="Título de la noticia"></div>
     <div class="field"><label>Categoría</label><input id="aNewsTag" placeholder="NOVEDADES"></div>
     <div class="field"><label>Fecha</label><input id="aNewsDate" type="date"></div>
+    <div class="field full"><label>Imagen de portada</label>
+      <label class="news-file-label">🖼️ Seleccionar imagen
+        <input id="aNewsImage" type="file" accept="image/*" onchange="previewNewsImage(event)">
+      </label>
+      <img id="newsImagePreview" class="news-admin-image-preview" alt="Vista previa">
+    </div>
     <div class="field full"><label>Resumen</label><textarea id="aNewsText" placeholder="Escribe un resumen corto..."></textarea></div>
+    <div class="field full"><label>Contenido completo</label><textarea id="aNewsBody" rows="8" placeholder="Escribe aquí toda la noticia..."></textarea></div>
    </div>
    <div class="admin-actions"><button class="admin-btn" onclick="addNews()">＋ Publicar noticia</button></div>
    <div id="newsAdminList" class="admin-list"></div>
@@ -777,13 +811,38 @@ async function addSensi(){
 }
 async function addNews(){
  if(!adminSession){toast('Inicia sesión como administrador');return;}
- const title=aNewsTitle.value.trim(), text=aNewsText.value.trim();
- if(!title||!text){toast('Escribe título y resumen');return;}
- const row={title,tag:aNewsTag.value.trim()||'NOVEDADES',date:aNewsDate.value||new Date().toISOString().slice(0,10),text};
+ const title=aNewsTitle.value.trim(), summary=aNewsText.value.trim(), body=aNewsBody.value.trim();
+ const imageFile=document.getElementById('aNewsImage')?.files?.[0];
+ if(!title||!summary||!body){toast('Completa título, resumen y contenido completo');return;}
+ let image_url=null;
+ if(imageFile){
+   const ext=(imageFile.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+   const path=`${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+   const {error:uploadError}=await supabaseClient.storage.from('news-images').upload(path,imageFile,{upsert:false,contentType:imageFile.type||'image/jpeg'});
+   if(uploadError){console.error(uploadError);toast('No se pudo subir la imagen. Revisa Storage de Supabase.');return;}
+   const {data:urlData}=supabaseClient.storage.from('news-images').getPublicUrl(path);
+   image_url=urlData?.publicUrl||null;
+ }
+ const row={title,tag:aNewsTag.value.trim()||'NOVEDADES',date:aNewsDate.value||new Date().toISOString().slice(0,10),text:summary,body,image_url};
  const {data,error}=await supabaseClient.from('news').insert(row).select().single();
- if(error){console.error(error);toast('No se pudo publicar la noticia');return;}
- adminNews.unshift(data); renderAdmin(); renderPublicNews(); aNewsTitle.value='';aNewsText.value='';toast('Noticia publicada para todos 💜');
+ if(error){
+   console.error(error);
+   if(image_url) toast('La imagen se subió, pero no se pudo publicar la noticia');
+   else toast('No se pudo publicar la noticia');
+   return;
+ }
+ adminNews.unshift(data); renderAdmin(); renderPublicNews();
+ aNewsTitle.value='';aNewsText.value='';aNewsBody.value='';aNewsTag.value='';
+ const img=document.getElementById('aNewsImage'); if(img)img.value='';
+ const prev=document.getElementById('newsImagePreview'); if(prev){prev.src='';prev.style.display='none';}
+ toast('Noticia publicada para todos 💜');
 }
+function previewNewsImage(event){
+ const file=event.target.files?.[0], img=document.getElementById('newsImagePreview');
+ if(!file||!img)return;
+ img.src=URL.createObjectURL(file); img.style.display='block';
+}
+
 async function addCode(){
  if(!adminSession){toast('Inicia sesión como administrador');return;}
  const code=aCode.value.trim(), reward=aReward.value.trim();
@@ -818,12 +877,36 @@ async function renderPublicCodes(){
 function copyCodeText(code){if(navigator.clipboard)navigator.clipboard.writeText(code).then(()=>toast('Código copiado')).catch(()=>toast('Código: '+code));else toast('Código: '+code);}
 async function renderPublicNews(){
  const box=document.getElementById('publicNews'); if(!box)return;
- const {data,error}=await supabaseClient.from('news').select('id,title,tag,date,text,created_at').order('created_at',{ascending:false}).limit(20);
+ const {data,error}=await supabaseClient.from('news').select('id,title,tag,date,text,body,image_url,created_at').order('created_at',{ascending:false}).limit(20);
  if(error){console.error(error);box.innerHTML='<div class="news-main"><h3>No se pudieron cargar las noticias.</h3><p>Intenta actualizar la página.</p></div>';return;}
  const news=data||[];
  if(!news.length){box.innerHTML='<article class="news-main"><span class="tag">REZZENTIDOS</span><h3>Noticias, eventos y novedades</h3><p>Aquí aparecerán las actualizaciones que publique el administrador de Rezzentidos.</p></article>';return;}
  const first=news[0], rest=news.slice(1);
- box.innerHTML=`<article class="news-main"><span class="tag">${esc(first.tag||'NOVEDADES')}</span><h3>${esc(first.title)}</h3><p>${esc(first.text)}</p><small>📅 ${esc(first.date||'Hoy')} · 💬 Rezzentidos</small></article>${rest.length?'<div class="news-list">'+rest.map(x=>`<article class="news-item"><div class="news-thumb">📰</div><div><b>${esc(x.title)}</b><small>${esc(x.tag||'NOVEDADES')} · ${esc(x.date||'')}</small></div></article>`).join('')+'</div>':''}`;
+ const card=(x,main=false)=>`<article class="${main?'news-main':'news-item'} ${x.image_url?'has-image':''}" onclick="openNewsArticle(${Number(x.id)})">
+   ${x.image_url?`<img class="news-cover" src="${esc(x.image_url)}" alt="">`:''}
+   <span class="tag">${esc(x.tag||'NOVEDADES')}</span>
+   <h3>${esc(x.title)}</h3>
+   <p>${esc(x.text||'')}</p>
+   <small>📅 ${esc(x.date||'Hoy')} · 💬 Rezzentidos</small>
+   <span class="news-read">Leer noticia completa →</span>
+ </article>`;
+ box.innerHTML=card(first,true)+(rest.length?'<div class="news-list">'+rest.map(x=>card(x,false)).join('')+'</div>':'');
+ window.rezzNewsData=news;
+}
+function openNewsArticle(id){
+ const x=(window.rezzNewsData||[]).find(n=>Number(n.id)===Number(id)); if(!x)return;
+ const modal=document.getElementById('newsArticleModal'); if(!modal)return;
+ document.getElementById('newsArticleContent').innerHTML=`
+   ${x.image_url?`<img class="news-article-image" src="${esc(x.image_url)}" alt="">`:''}
+   <span class="tag">${esc(x.tag||'NOVEDADES')}</span>
+   <h1>${esc(x.title)}</h1>
+   <div class="news-article-meta">📅 ${esc(x.date||'Hoy')} · 💬 Rezzentidos</div>
+   <div class="news-article-body">${esc(x.body||x.text||'')}</div>`;
+ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+}
+function closeNewsArticle(){
+ const modal=document.getElementById('newsArticleModal'); if(!modal)return;
+ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow='';
 }
 
 supabaseClient.auth.onAuthStateChange((_event,session)=>{adminSession=session;updateAdminUI();});
@@ -834,6 +917,7 @@ renderPublicNews();
 
 function openSocials(){const m=document.getElementById('socialModal');if(!m)return;m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
 function closeSocials(){const m=document.getElementById('socialModal');if(!m)return;m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeNewsArticle();closeSocials();}})
 </script>
 </body>
 </html>
