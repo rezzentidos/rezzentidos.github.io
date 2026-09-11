@@ -161,6 +161,7 @@ button{cursor:pointer}
 .admin-item b{font-size:13px}.admin-item small{display:block;color:#786b8e;margin-top:3px}
 .admin-delete{border:0;background:#ffe8f0;color:#a30b45;border-radius:8px;padding:7px 9px;font-weight:800;font-size:11px}
 .admin-note{background:#f5edff;border-radius:11px;padding:10px;font-size:11px;line-height:1.4;color:#665575;margin-bottom:12px}
+.admin-login{max-width:420px;margin:0 auto;padding:8px 0}.admin-login h3{margin:0 0 6px;font-size:18px}.admin-login p{color:#75698c;font-size:12px;line-height:1.45}.admin-status{font-size:11px;color:#6d5d7e;margin-top:8px}.admin-logout{margin-left:auto;border:0;background:#eee5ff;color:#5a12b5;border-radius:9px;padding:8px 10px;font-weight:900;font-size:11px}
 @media(min-width:700px){
  body{padding-bottom:0}.bottom{position:static;max-width:900px;margin:20px auto;border-radius:18px}
  .shortcuts{max-width:880px;margin:10px auto}
@@ -281,16 +282,12 @@ button{cursor:pointer}
 
 <section class="section" id="noticias">
  <div class="section-head"><h2>📰 Últimas noticias</h2><button class="link" onclick="toast('Mostrando todas las noticias')">Ver todas →</button></div>
- <article class="news-main">
-   <span class="tag">NUEVA ACTUALIZACIÓN</span>
-   <h3>Todo lo que debes saber de Free Fire</h3>
-   <p>Noticias, eventos, novedades y cambios importantes. Aquí podrás publicar las novedades de Rezzentidos.</p>
-   <small>📅 Hoy · 💬 Comunidad Rezzentidos</small>
- </article>
- <div class="news-list">
-   <article class="news-item"><div class="news-thumb">🎮</div><div><b>Eventos y recompensas</b><small>Descubre las novedades del juego.</small></div></article>
-   <article class="news-item"><div class="news-thumb">🔫</div><div><b>Nuevas skins y armas</b><small>Las novedades que no te quieres perder.</small></div></article>
-   <article class="news-item"><div class="news-thumb">💎</div><div><b>Códigos de recompensa</b><small>Revisa los códigos publicados.</small></div></article>
+ <div id="publicNews">
+   <article class="news-main">
+    <span class="tag">REZZENTIDOS</span>
+    <h3>Noticias, eventos y novedades</h3>
+    <p>Aquí aparecerán las actualizaciones que publique el administrador de Rezzentidos.</p>
+   </article>
  </div>
 </section>
 
@@ -453,10 +450,19 @@ button{cursor:pointer}
    <h2>⚙️ Panel de Rezzentidos</h2>
    <button class="close-admin" onclick="closeAdmin()">×</button>
   </div>
-  <div class="admin-note">
-   Este panel funciona en este navegador y guarda los cambios en <b>localStorage</b>.
-   Para un sitio público necesitarás después un servidor, base de datos y autenticación real.
+  <div id="adminLogin" class="admin-login">
+   <h3>🔐 Acceso de administrador</h3>
+   <p>Solo la cuenta de administrador podrá publicar, editar o eliminar noticias, códigos y sensibilidades.</p>
+   <div class="form-grid">
+    <div class="field full"><label>Correo</label><input id="adminEmail" type="email" autocomplete="username" placeholder="Tu correo de administrador"></div>
+    <div class="field full"><label>Contraseña</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña"></div>
+   </div>
+   <div class="admin-actions"><button class="admin-btn" onclick="adminLogin()">🔐 Entrar</button></div>
+   <div id="adminLoginStatus" class="admin-status"></div>
   </div>
+  <div id="adminContent" hidden>
+   <div class="admin-note">Sesión de administrador activa. Los cambios se guardan en Supabase y son visibles públicamente.</div>
+   <div class="admin-head" style="margin-bottom:12px"><b id="adminUserLabel" style="font-size:12px"></b><button class="admin-logout" onclick="adminLogout()">Cerrar sesión</button></div>
   <div class="admin-tabs">
    <button class="admin-tab active" onclick="adminTab('sensi',this)">🎯 Sensibilidades</button>
    <button class="admin-tab" onclick="adminTab('news',this)">📰 Noticias</button>
@@ -496,6 +502,7 @@ button{cursor:pointer}
    </div>
    <div class="admin-actions"><button class="admin-btn" onclick="addCode()">＋ Guardar código</button></div>
    <div id="codesAdminList" class="admin-list"></div>
+  </div>
   </div>
  </section>
 </div>
@@ -676,13 +683,44 @@ function buscar(){
  toast('Sensibilidad encontrada');
 }
 
-let adminData = JSON.parse(localStorage.getItem('rezzentidos_admin') || '{"sensi":[],"news":[],"codes":[]}');
+let adminSession=null;
+let adminNews=[];
+let adminCodes=[];
+let adminSensi=[];
 
-function saveAdmin(){localStorage.setItem('rezzentidos_admin',JSON.stringify(adminData));}
+async function checkAdminSession(){
+ const {data}=await supabaseClient.auth.getSession();
+ adminSession=data.session;
+ updateAdminUI();
+}
+function updateAdminUI(){
+ const login=document.getElementById('adminLogin'), content=document.getElementById('adminContent');
+ if(!login||!content)return;
+ if(adminSession){
+  login.hidden=true; content.hidden=false;
+  const label=document.getElementById('adminUserLabel'); if(label) label.textContent='👑 '+(adminSession.user.email||'Administrador');
+ }else{
+  login.hidden=false; content.hidden=true;
+ }
+}
+async function adminLogin(){
+ const email=document.getElementById('adminEmail').value.trim();
+ const password=document.getElementById('adminPassword').value;
+ const status=document.getElementById('adminLoginStatus');
+ if(!email||!password){status.textContent='Escribe tu correo y contraseña.';return;}
+ status.textContent='Entrando…';
+ const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+ if(error){console.error(error);status.textContent='No se pudo iniciar sesión. Revisa tus datos.';return;}
+ adminSession=data.session; updateAdminUI(); await loadAdminData(); toast('Bienvenido al panel de Rezzentidos 💜');
+}
+async function adminLogout(){
+ await supabaseClient.auth.signOut(); adminSession=null; updateAdminUI(); toast('Sesión cerrada');
+}
 function openAdmin(){
  document.getElementById('adminOverlay').classList.add('open');
  document.getElementById('adminOverlay').setAttribute('aria-hidden','false');
- renderAdmin();
+ updateAdminUI();
+ if(adminSession) loadAdminData();
 }
 function closeAdmin(){
  document.getElementById('adminOverlay').classList.remove('open');
@@ -697,44 +735,83 @@ function adminTab(name,btn){
 function esc(v){
  return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function addSensi(){
+async function loadAdminData(){
+ if(!adminSession)return;
+ const [s,c,n]=await Promise.all([
+  supabaseClient.from('sensitivities').select('*').order('created_at',{ascending:false}),
+  supabaseClient.from('codes').select('*').order('created_at',{ascending:false}),
+  supabaseClient.from('news').select('*').order('created_at',{ascending:false})
+ ]);
+ if(!s.error) adminSensi=s.data||[]; else console.error(s.error);
+ if(!c.error) adminCodes=c.data||[]; else console.error(c.error);
+ if(!n.error) adminNews=n.data||[]; else console.error(n.error);
+ renderAdmin(); renderPublicCodes(); renderPublicNews();
+}
+async function addSensi(){
+ if(!adminSession){toast('Inicia sesión como administrador');return;}
  const model=document.getElementById('aModel').value.trim();
  if(!model){toast('Escribe el modelo');return;}
- adminData.sensi.unshift({
-  name:model,keys:[model.toLowerCase()],general:+aGeneral.value,red:+aRed.value,
-  x2:+a2x.value,x4:+a4x.value,awm:+aAwm.value,dpi:aDpi.value.trim()||'N/A',fire:+aFire.value
- });
- sensitivities.unshift(adminData.sensi[0]);
- saveAdmin();renderAdmin();document.getElementById('aModel').value='';toast('Sensibilidad guardada');
+ const row={name:model,keys:[model.toLowerCase()],general:+aGeneral.value,red:+aRed.value,x2:+a2x.value,x4:+a4x.value,awm:+aAwm.value,dpi:aDpi.value.trim()||'N/A',fire:+aFire.value};
+ const {data,error}=await supabaseClient.from('sensitivities').insert(row).select().single();
+ if(error){console.error(error);toast('No se pudo guardar la sensibilidad');return;}
+ adminSensi.unshift(data); sensitivities.unshift(data); renderAdmin(); document.getElementById('aModel').value=''; toast('Sensibilidad publicada 💜');
 }
-function addNews(){
+async function addNews(){
+ if(!adminSession){toast('Inicia sesión como administrador');return;}
  const title=aNewsTitle.value.trim(), text=aNewsText.value.trim();
- if(!title){toast('Escribe un título');return;}
- adminData.news.unshift({title,tag:aNewsTag.value.trim()||'NOVEDADES',date:aNewsDate.value||'Hoy',text});
- saveAdmin();renderAdmin();aNewsTitle.value='';aNewsText.value='';toast('Noticia guardada');
+ if(!title||!text){toast('Escribe título y resumen');return;}
+ const row={title,tag:aNewsTag.value.trim()||'NOVEDADES',date:aNewsDate.value||new Date().toISOString().slice(0,10),text};
+ const {data,error}=await supabaseClient.from('news').insert(row).select().single();
+ if(error){console.error(error);toast('No se pudo publicar la noticia');return;}
+ adminNews.unshift(data); renderAdmin(); renderPublicNews(); aNewsTitle.value='';aNewsText.value='';toast('Noticia publicada para todos 💜');
 }
-function addCode(){
+async function addCode(){
+ if(!adminSession){toast('Inicia sesión como administrador');return;}
  const code=aCode.value.trim(), reward=aReward.value.trim();
  if(!code){toast('Escribe un código');return;}
- adminData.codes.unshift({code,reward:reward||'Recompensa de Free Fire'});
- saveAdmin();renderAdmin();renderPublicCodes();aCode.value='';aReward.value='';toast('Código guardado');
+ const {data,error}=await supabaseClient.from('codes').insert({code,reward:reward||'Recompensa de Free Fire'}).select().single();
+ if(error){console.error(error);toast('No se pudo guardar el código');return;}
+ adminCodes.unshift(data); renderAdmin(); renderPublicCodes(); aCode.value='';aReward.value='';toast('Código publicado 💜');
 }
-function del(type,index){
- adminData[type].splice(index,1);saveAdmin();renderAdmin();renderPublicCodes();toast('Elemento eliminado');
+async function del(type,id){
+ if(!adminSession){toast('Inicia sesión como administrador');return;}
+ const table=type==='news'?'news':type==='codes'?'codes':'sensitivities';
+ const {error}=await supabaseClient.from(table).delete().eq('id',id);
+ if(error){console.error(error);toast('No se pudo eliminar');return;}
+ if(type==='news')adminNews=adminNews.filter(x=>x.id!==id);
+ if(type==='codes')adminCodes=adminCodes.filter(x=>x.id!==id);
+ if(type==='sensi')adminSensi=adminSensi.filter(x=>x.id!==id);
+ renderAdmin();renderPublicCodes();renderPublicNews();toast('Elemento eliminado');
 }
 function renderAdmin(){
- sensiAdminList.innerHTML=adminData.sensi.length?adminData.sensi.map((x,i)=>
-  `<div class="admin-item"><div><b>🎯 ${esc(x.name)}</b><small>General ${x.general} · Rojo ${x.red} · DPI ${esc(x.dpi)}</small></div><button class="admin-delete" onclick="del('sensi',${i})">Eliminar</button></div>`).join('')
-  :'<div class="no-result">Aún no has agregado sensibilidades.</div>';
- newsAdminList.innerHTML=adminData.news.length?adminData.news.map((x,i)=>
-  `<div class="admin-item"><div><b>📰 ${esc(x.title)}</b><small>${esc(x.tag)} · ${esc(x.date)}</small></div><button class="admin-delete" onclick="del('news',${i})">Eliminar</button></div>`).join('')
-  :'<div class="no-result">Aún no has publicado noticias.</div>';
- codesAdminList.innerHTML=adminData.codes.length?adminData.codes.map((x,i)=>
-  `<div class="admin-item"><div><b>🎁 ${esc(x.code)}</b><small>${esc(x.reward)}</small></div><button class="admin-delete" onclick="del('codes',${i})">Eliminar</button></div>`).join('')
-  :'<div class="no-result">Aún no has agregado códigos.</div>';
+ sensiAdminList.innerHTML=adminSensi.length?adminSensi.map(x=>`<div class="admin-item"><div><b>🎯 ${esc(x.name)}</b><small>General ${x.general} · Rojo ${x.red} · DPI ${esc(x.dpi)}</small></div><button class="admin-delete" onclick="del('sensi','${x.id}')">Eliminar</button></div>`).join(''):'<div class="no-result">Aún no has agregado sensibilidades.</div>';
+ newsAdminList.innerHTML=adminNews.length?adminNews.map(x=>`<div class="admin-item"><div><b>📰 ${esc(x.title)}</b><small>${esc(x.tag)} · ${esc(x.date||'')}</small></div><button class="admin-delete" onclick="del('news','${x.id}')">Eliminar</button></div>`).join(''):'<div class="no-result">Aún no has publicado noticias.</div>';
+ codesAdminList.innerHTML=adminCodes.length?adminCodes.map(x=>`<div class="admin-item"><div><b>🎁 ${esc(x.code)}</b><small>${esc(x.reward)}</small></div><button class="admin-delete" onclick="del('codes','${x.id}')">Eliminar</button></div>`).join(''):'<div class="no-result">Aún no has agregado códigos.</div>';
+}
+async function renderPublicCodes(){
+ const box=document.getElementById('publicCodes'); if(!box)return;
+ box.innerHTML='<div class="no-result">Cargando códigos…</div>';
+ const {data,error}=await supabaseClient.from('codes').select('id,code,reward,created_at').order('created_at',{ascending:false}).limit(50);
+ if(error){console.error(error);box.innerHTML='<div class="no-result">No se pudieron cargar los códigos.</div>';return;}
+ const codes=data||[];
+ box.innerHTML=codes.length?codes.map(x=>`<div class="code-public"><div><b>🎁 ${esc(x.code)}</b><small>${esc(x.reward)}</small></div><button class="small-btn" onclick="copyCodeText('${esc(x.code).replace(/'/g,"&#39;")}')">Copiar</button></div>`).join(''):'<div class="no-result">Todavía no hay códigos publicados.</div>';
+}
+function copyCodeText(code){if(navigator.clipboard)navigator.clipboard.writeText(code).then(()=>toast('Código copiado')).catch(()=>toast('Código: '+code));else toast('Código: '+code);}
+async function renderPublicNews(){
+ const box=document.getElementById('publicNews'); if(!box)return;
+ const {data,error}=await supabaseClient.from('news').select('id,title,tag,date,text,created_at').order('created_at',{ascending:false}).limit(20);
+ if(error){console.error(error);box.innerHTML='<div class="news-main"><h3>No se pudieron cargar las noticias.</h3><p>Intenta actualizar la página.</p></div>';return;}
+ const news=data||[];
+ if(!news.length){box.innerHTML='<article class="news-main"><span class="tag">REZZENTIDOS</span><h3>Noticias, eventos y novedades</h3><p>Aquí aparecerán las actualizaciones que publique el administrador de Rezzentidos.</p></article>';return;}
+ const first=news[0], rest=news.slice(1);
+ box.innerHTML=`<article class="news-main"><span class="tag">${esc(first.tag||'NOVEDADES')}</span><h3>${esc(first.title)}</h3><p>${esc(first.text)}</p><small>📅 ${esc(first.date||'Hoy')} · 💬 Rezzentidos</small></article>${rest.length?'<div class="news-list">'+rest.map(x=>`<article class="news-item"><div class="news-thumb">📰</div><div><b>${esc(x.title)}</b><small>${esc(x.tag||'NOVEDADES')} · ${esc(x.date||'')}</small></div></article>`).join('')+'</div>':''}`;
 }
 
+supabaseClient.auth.onAuthStateChange((_event,session)=>{adminSession=session;updateAdminUI();});
+checkAdminSession();
 renderPublicCodes();
+renderPublicNews();
+
 </script>
 </body>
 </html>
