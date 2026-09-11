@@ -286,7 +286,7 @@ button{cursor:pointer}
 <header class="top">
   <div class="topbar">
     <button class="icon-btn" aria-label="Menú" onclick="openMenu()">☰</button>
-    <div class="brand"><div class="logo">Rezz<span>entidos</span></div></div>
+    <div class="brand"><div class="logo">Rezzen<span>tidos</span></div></div>
     <div style="display:flex;gap:7px">
       <button class="icon-btn" aria-label="Buscar" onclick="document.getElementById('device').focus()">⌕</button>
       <button class="icon-btn" aria-label="Administración" onclick="openAdmin()">⚙</button>
@@ -294,24 +294,7 @@ button{cursor:pointer}
   </div>
 </header>
 
-<main>
-<section class="hero" id="inicio">
-  <div class="hero-content">
-    <span class="badge">FREE FIRE</span>
-    <h1>Bienvenido a<br>Rezzentidos</h1>
-    <p>Tu portal de Free Fire para sensibilidades, noticias, códigos, configuraciones y comunidad.</p>
-    <button class="cta" onclick="document.getElementById('sensibilidades').scrollIntoView()">Explorar ahora →</button>
-  </div>
-</section>
-
-<nav class="shortcuts" aria-label="Categorías">
-  <button class="shortcut" onclick="go('sensibilidades')"><span class="ico">🎯</span><b>Sensibilidades</b></button>
-  <button class="shortcut" onclick="go('noticias')"><span class="ico">📰</span><b>Noticias</b></button>
-  <button class="shortcut" onclick="go('codigos')"><span class="ico">🎁</span><b>Códigos</b></button>
-  <button class="shortcut" onclick="go('configuraciones')"><span class="ico">⚙️</span><b>Configuraciones</b></button>
-  <button class="shortcut" onclick="openCommunity()"><span class="ico">👥</span><b>Comunidad</b></button>
-</nav>
-
+<main id="inicio">
 <div class="container">
 
 <section class="section" id="noticias">
