@@ -147,10 +147,10 @@ button{cursor:pointer}
 .admin-tab{white-space:nowrap;border:1px solid var(--line);background:#fff;color:#5c18b5;border-radius:999px;padding:9px 13px;font-weight:800;font-size:12px}
 .admin-tab.active{background:#7119e8;color:#fff}
 .admin-view{display:none}.admin-view.active{display:block}
-.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
-.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field.full{grid-column:1/-1}
 .field label{font-size:11px;font-weight:800;color:#625477}.field input,.field textarea,.field select{
- border:1px solid #dfd2f4;border-radius:10px;padding:11px;outline:none;color:var(--ink);background:#fcfaff
+ width:100%;min-width:0;border:1px solid #dfd2f4;border-radius:10px;padding:11px;outline:none;color:var(--ink);background:#fcfaff
 }
 .field textarea{min-height:80px;resize:vertical}
 .admin-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
@@ -202,6 +202,30 @@ button{cursor:pointer}
 }
 .code-public b{font-size:15px;letter-spacing:.4px}
 .code-public small{display:block;color:#75698c;margin-top:4px}
+
+.social-card{
+  margin:22px 0 10px;
+  background:linear-gradient(135deg,#241044,#6519b8);
+  color:#fff;border-radius:20px;padding:20px;
+  box-shadow:0 8px 24px rgba(49,16,82,.18);
+  position:relative;overflow:hidden
+}
+.social-card:after{
+  content:"";position:absolute;width:150px;height:150px;
+  right:-45px;top:-55px;border-radius:50%;
+  background:rgba(255,255,255,.10)
+}
+.social-card h2{margin:0 0 7px;font-size:24px;position:relative;z-index:1}
+.social-card p{margin:0;color:#eee5ff;line-height:1.45;font-size:13px;position:relative;z-index:1}
+.social-links{display:grid;grid-template-columns:1fr;gap:9px;margin-top:14px;position:relative;z-index:1}
+.social-link{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  text-decoration:none;background:#fff;color:#32114f;
+  border-radius:13px;padding:12px 14px;font-weight:900
+}
+.social-link span{font-size:20px}
+.social-link small{display:block;font-weight:700;color:#75698c;margin-top:2px}
+
 .community-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .community-posts{display:grid;gap:9px;margin-top:12px}
 .community-post{
@@ -215,6 +239,9 @@ button{cursor:pointer}
 }
 @media(max-width:430px){
   .menu-grid{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  .info-panel,.menu-panel{padding:16px}
 }
 
 </style>
@@ -312,12 +339,49 @@ button{cursor:pointer}
  </div>
 </section>
 
+
+<section class="social-card" id="redes">
+  <h2>📲 Mis redes</h2>
+  <p>Sigue a Rezzentidos y recibe novedades, códigos y contenido de Free Fire.</p>
+  <div class="social-links">
+    <a class="social-link" href="https://whatsapp.com/channel/0029Vb8dUkn1yT2BnUDkNK3C" target="_blank" rel="noopener">
+      <div><span>💬 Canal de WhatsApp</span><small>Únete al canal oficial de Rezzentidos</small></div>
+      <b>→</b>
+    </a>
+
+    <a class="social-link" href="https://youtube.com/@soyrezzen" target="_blank" rel="noopener">
+      <div><span>▶️ YouTube</span><small>Canal de Soy Rezzen</small></div>
+      <b>→</b>
+    </a>
+
+    <a class="social-link" href="https://www.tiktok.com/@soyrezzen" target="_blank" rel="noopener">
+      <div><span>🎵 TikTok</span><small>@soyrezzen</small></div>
+      <b>→</b>
+    </a>
+
+    <a class="social-link" href="https://www.facebook.com/share/19N7n6qin1/" target="_blank" rel="noopener">
+      <div><span>📘 Facebook</span><small>Perfil de Rezzentidos</small></div>
+      <b>→</b>
+    </a>
+
+    <a class="social-link" href="https://www.instagram.com/soyrezzen" target="_blank" rel="noopener">
+      <div><span>📸 Instagram</span><small>@soyrezzen</small></div>
+      <b>→</b>
+    </a>
+
+    <a class="social-link" href="https://discord.gg/bMZ7kQHMJ" target="_blank" rel="noopener">
+      <div><span>🎮 Discord</span><small>Únete a la comunidad de Rezzentidos</small></div>
+      <b>→</b>
+    </a>
+  </div>
+</section>
+
 <section class="section">
  <div class="news-main" style="min-height:auto">
    <span class="tag">COMUNIDAD</span>
    <h3>💜 Únete a Rezzentidos</h3>
    <p>Comparte tus sensibilidades, consejos y experiencias con otros jugadores.</p>
-   <button class="cta" onclick="toast('La comunidad estará disponible disponible')">Entrar ahora →</button>
+   <button class="cta" onclick="openCommunity()">Entrar ahora →</button>
  </div>
 </section>
 
