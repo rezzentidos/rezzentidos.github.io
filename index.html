@@ -70,21 +70,52 @@ button{cursor:pointer}
 .section-head{display:flex;align-items:center;justify-content:space-between;margin:0 3px 11px}
 .section-head h2{font-size:20px;margin:0}
 .link{border:0;background:transparent;color:#6815dc;font-weight:800;font-size:12px}
-.news-main{
-  background:linear-gradient(135deg,#19052f,#4d0c9e);color:white;
-  border-radius:17px;padding:18px;min-height:185px;position:relative;overflow:hidden
+.welcome-mini{
+  margin:10px 10px 2px;border-radius:14px;padding:14px 16px;
+  background:linear-gradient(135deg,#19052f,#5b13c9);
+  color:white;font-size:18px;font-weight:900;letter-spacing:.5px;
+  box-shadow:0 6px 18px #3d087e25;
 }
-.news-main:before{content:"";position:absolute;width:170px;height:170px;right:-40px;top:-30px;border-radius:50%;background:#bb43ff66}
-.tag{display:inline-block;background:#9e2cff;color:white;border-radius:7px;padding:5px 8px;font-size:10px;font-weight:900}
-.news-main h3{font-size:22px;max-width:620px;margin:11px 0 8px}
-.news-main p{max-width:620px;color:#eee2ff;line-height:1.4;font-size:13px}
-.news-list{display:grid;gap:9px;margin-top:9px}
-.news-item{
-  background:white;border:1px solid var(--line);border-radius:14px;padding:13px;
-  display:flex;align-items:center;gap:12px;box-shadow:0 3px 12px #24104c0b
+/* Noticias compactas */
+.news-main,.news-item{cursor:pointer}
+.news-main,.news-item{
+  background:white;color:var(--ink);border:1px solid var(--line);border-radius:13px;
+  overflow:hidden;box-shadow:0 3px 12px #24104c0b
 }
-.news-thumb{width:58px;height:58px;border-radius:12px;background:linear-gradient(135deg,#5b13c9,#d054ff);display:grid;place-items:center;font-size:27px;flex:none}
-.news-item b{font-size:14px;line-height:1.25}.news-item small{display:block;margin-top:6px;color:#776a92}
+.news-main .news-cover,.news-item .news-cover{
+  width:100%;height:105px;object-fit:cover;display:block;background:#eee5ff
+}
+.news-main .tag,.news-item .tag{margin:8px 10px 0}
+.tag{display:inline-block;background:#9e2cff;color:white;border-radius:7px;padding:4px 7px;font-size:9px;font-weight:900}
+.news-main h3,.news-item h3{font-size:14px;line-height:1.2;margin:6px 10px 4px;color:var(--ink)}
+.news-main p,.news-item p{display:none}
+.news-main small,.news-item small{display:block;margin:0 10px 6px;color:#776a92;font-size:10px}
+.news-read{display:block;margin:0 10px 10px;color:#6815dc;font-size:10px;font-weight:900}
+.news-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:9px}
+.news-list.expanded{grid-template-columns:repeat(3,minmax(0,1fr))}
+.news-item .news-cover{height:100px}
+.news-all-wrap{margin-top:9px}
+.news-all-btn{display:none;width:100%;border:0;background:#f2e8ff;color:#6815dc;border-radius:10px;padding:9px;font-size:11px;font-weight:900}
+.news-all-btn.show{display:block}
+.news-article-modal{position:fixed;inset:0;z-index:9999;display:none}
+.news-article-modal.open{display:block}
+.news-article-backdrop{position:absolute;inset:0;background:rgba(5,3,15,.82);backdrop-filter:blur(5px)}
+.news-article-panel{position:relative;width:min(760px,calc(100% - 24px));max-height:90vh;overflow:auto;margin:5vh auto;background:#171022;border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:18px;box-shadow:0 20px 70px rgba(0,0,0,.5)}
+.news-article-panel .modal-close{position:absolute;right:12px;top:10px}
+.news-article-image{width:100%;max-height:360px;object-fit:cover;border-radius:18px;margin:8px 0 18px}
+.news-article-body{white-space:pre-wrap;line-height:1.75;color:#ddd}
+.news-article-meta{color:#a99db8;font-size:.88rem;margin:7px 0 16px}
+.news-empty-image{padding:14px;border:1px dashed rgba(255,255,255,.12);border-radius:14px;color:#aaa}
+.news-admin-image-preview{max-width:100%;max-height:160px;border-radius:14px;margin-top:8px;display:none}
+.news-file-label{display:flex;align-items:center;justify-content:center;min-height:48px;border:1px dashed rgba(185,140,255,.5);border-radius:12px;padding:10px;cursor:pointer}
+.news-file-label input{display:none}
+@media(max-width:699px){
+  .news-list{display:flex;overflow-x:auto;gap:8px;padding-bottom:2px;scroll-snap-type:x mandatory}
+  .news-list .news-item{min-width:185px;max-width:185px;scroll-snap-align:start}
+  .news-list .news-cover{height:88px}
+  .news-list.expanded{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}
+  .news-list.expanded .news-item{min-width:0;max-width:none}
+}
 .sensi{
   background:linear-gradient(135deg,#4e0a9b,#8c21ed);color:white;border-radius:18px;padding:17px;
   box-shadow:0 8px 22px #741cff35
@@ -279,6 +310,40 @@ button{cursor:pointer}
 .news-file-label{display:flex;align-items:center;justify-content:center;min-height:48px;border:1px dashed rgba(185,140,255,.5);border-radius:12px;padding:10px;cursor:pointer}
 .news-file-label input{display:none}
 
+/* Responsive: tablet, iPad y computadora */
+@media(min-width:700px){
+  body{padding-bottom:0;background:#f5f2fa}
+  .top{padding:14px 28px 12px}
+  .topbar{max-width:1200px;margin:auto}
+  .brand{position:absolute;left:50%;transform:translateX(-50%)}
+  .logo{font-size:29px}
+  .icon-btn{width:44px;height:44px}
+  main{padding-top:58px}
+  .container{max-width:1200px;padding:0 22px}
+  .section{margin:28px 0}
+  .section-head h2{font-size:23px}
+  .news-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .sensi{padding:24px}
+  .codes{grid-template-columns:1.4fr .6fr;min-height:190px}
+  .bottom{position:fixed;top:70px;bottom:auto;left:50%;right:auto;transform:translateX(-50%);width:min(900px,calc(100% - 40px));margin:0;border-radius:16px;padding:7px;box-shadow:0 8px 25px #24104c22;grid-template-columns:repeat(5,1fr);background:#16052e}
+  .bottom .nav{font-size:11px;padding:7px 4px}
+  .bottom .nav span{font-size:20px}
+  .social-float{right:28px;bottom:28px}
+}
+@media(min-width:1100px){
+  .top{padding-left:40px;padding-right:40px}
+  .container{padding-left:0;padding-right:0}
+  .section{margin:34px 0}
+  .news-list{grid-template-columns:repeat(3,1fr)}
+  .news-cover{height:210px}
+}
+@media(min-width:700px) and (max-width:900px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .news-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .container{padding:0 18px}
+}
+
 </style>
 </head>
 <body>
@@ -297,8 +362,12 @@ button{cursor:pointer}
 <main id="inicio">
 <div class="container">
 
+<section class="welcome-mini" aria-label="Bienvenida">
+  <div>BIENVENIDOS</div>
+</section>
+
 <section class="section" id="noticias">
- <div class="section-head"><h2>📰 Últimas noticias</h2><button class="link" onclick="toast('Mostrando todas las noticias')">Ver todas →</button></div>
+ <div class="section-head"><h2>📰 Últimas noticias</h2><button id="newsAllBtnTop" class="link" onclick="toggleAllNews()">Ver todas →</button></div>
  <div id="publicNews">
    <article class="news-main">
     <span class="tag">REZZENTIDOS</span>
@@ -783,6 +852,51 @@ async function loadAdminData(){
  if(!n.error) adminNews=n.data||[]; else console.error(n.error);
  renderAdmin(); renderPublicCodes(); renderPublicNews();
 }
+async function importSensiCsv(event){
+  if(!adminSession){toast('Inicia sesión como administrador');return;}
+  const file=event.target.files?.[0]; if(!file)return;
+  const status=document.getElementById('sensiImportStatus');
+  if(status) status.textContent='Leyendo archivo…';
+  try{
+    const text=await file.text();
+    const rows=text.replace(/^\uFEFF/,'').trim().split(/\r?\n/).filter(Boolean);
+    if(rows.length<2){toast('El CSV no tiene datos');return;}
+    const parseLine=line=>{
+      const out=[]; let cur='', quoted=false;
+      for(let i=0;i<line.length;i++){const c=line[i];
+        if(c==='"' && line[i+1]==='"'){cur+='"';i++;continue}
+        if(c==='"'){quoted=!quoted;continue}
+        if(c===',' && !quoted){out.push(cur.trim());cur='';} else cur+=c;
+      } out.push(cur.trim()); return out;
+    };
+    const header=parseLine(rows[0]).map(x=>x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''));
+    const aliases={
+      name:['modelo','nombre','name'], dpi:['dpi'], general:['general'], red:['red','puntorojo','punto rojo'],
+      x2:['2x','x2','mira2x'], x4:['4x','x4','mira4x'], awm:['awm'], fire:['fire','botondedisparo','boton de disparo']
+    };
+    const idx={};
+    for(const k in aliases) idx[k]=header.findIndex(h=>aliases[k].includes(h));
+    if(idx.name<0){toast('Falta la columna Modelo');return;}
+    const num=(v,max=200)=>{const n=Number(String(v).replace(',','.'));return Number.isFinite(n)&&n>=0&&n<=max?n:null};
+    const payload=[];
+    for(let i=1;i<rows.length;i++){
+      const c=parseLine(rows[i]); const name=(c[idx.name]||'').trim(); if(!name)continue;
+      const general=num(c[idx.general]), red=num(c[idx.red]), x2=num(c[idx.x2]), x4=num(c[idx.x4]), awm=num(c[idx.awm]), fire=num(c[idx.fire],100);
+      if([general,red,x2,x4,awm,fire].some(v=>v===null)){toast(`Revisa la fila ${i+1}`);return;}
+      payload.push({name,keys:[name.toLowerCase()],general,red,x2,x4,awm,dpi:(c[idx.dpi]||'N/A').trim()||'N/A',fire});
+    }
+    if(!payload.length){toast('No encontré sensibilidades válidas');return;}
+    if(status) status.textContent=`Importando ${payload.length} sensibilidades…`;
+    const {data,error}=await supabaseClient.from('sensitivities').insert(payload).select();
+    if(error){console.error(error);toast('No se pudieron importar. Revisa el CSV.');return;}
+    adminSensi=[...(data||[]),...adminSensi];
+    sensitivities.unshift(...(data||[]));
+    renderAdmin();
+    if(status) status.textContent=`✅ ${data.length} sensibilidades importadas correctamente.`;
+    event.target.value='';
+    toast(`${data.length} sensibilidades publicadas 💜`);
+  }catch(err){console.error(err);toast('No se pudo leer el archivo CSV');}
+}
 async function addSensi(){
  if(!adminSession){toast('Inicia sesión como administrador');return;}
  const model=document.getElementById('aModel').value.trim();
@@ -860,21 +974,39 @@ async function renderPublicCodes(){
 function copyCodeText(code){if(navigator.clipboard)navigator.clipboard.writeText(code).then(()=>toast('Código copiado')).catch(()=>toast('Código: '+code));else toast('Código: '+code);}
 async function renderPublicNews(){
  const box=document.getElementById('publicNews'); if(!box)return;
- const {data,error}=await supabaseClient.from('news').select('id,title,tag,date,text,body,image_url,created_at').order('created_at',{ascending:false}).limit(20);
- if(error){console.error(error);box.innerHTML='<div class="news-main"><h3>No se pudieron cargar las noticias.</h3><p>Intenta actualizar la página.</p></div>';return;}
+ const {data,error}=await supabaseClient.from('news').select('id,title,tag,date,text,body,image_url,created_at').order('created_at',{ascending:false}).limit(50);
+ if(error){console.error(error);box.innerHTML='<article class="news-main"><h3>No se pudieron cargar las noticias.</h3><p>Intenta actualizar la página.</p></article>';return;}
  const news=data||[];
+ window.rezzNewsData=news;
  if(!news.length){box.innerHTML='<article class="news-main"><span class="tag">REZZENTIDOS</span><h3>Noticias, eventos y novedades</h3><p>Aquí aparecerán las actualizaciones que publique el administrador de Rezzentidos.</p></article>';return;}
- const first=news[0], rest=news.slice(1);
- const card=(x,main=false)=>`<article class="${main?'news-main':'news-item'} ${x.image_url?'has-image':''}" onclick="openNewsArticle(${Number(x.id)})">
+ const card=x=>`<article class="news-item" onclick="openNewsArticle(${Number(x.id)})">
    ${x.image_url?`<img class="news-cover" src="${esc(x.image_url)}" alt="">`:''}
    <span class="tag">${esc(x.tag||'NOVEDADES')}</span>
    <h3>${esc(x.title)}</h3>
-   <p>${esc(x.text||'')}</p>
-   <small>📅 ${esc(x.date||'Hoy')} · 💬 Rezzentidos</small>
-   <span class="news-read">Leer noticia completa →</span>
+   <small>📅 ${esc(x.date||'Hoy')}</small>
+   <span class="news-read">Leer completa →</span>
  </article>`;
- box.innerHTML=card(first,true)+(rest.length?'<div class="news-list">'+rest.map(x=>card(x,false)).join('')+'</div>':'');
- window.rezzNewsData=news;
+ const visible=news.slice(0,3);
+ box.innerHTML=`<div class="news-list">${visible.map(card).join('')}</div><div class="news-all-wrap"><button id="newsAllBtn" class="news-all-btn${news.length>3?' show':''}" onclick="toggleAllNews()">Ver todas las noticias →</button></div>`;
+ const top=document.getElementById('newsAllBtnTop'); if(top)top.style.display=news.length>3?'inline-block':'none';
+}
+function toggleAllNews(){
+ const box=document.getElementById('publicNews'); if(!box)return;
+ const news=window.rezzNewsData||[];
+ const list=box.querySelector('.news-list'); const btn=box.querySelector('#newsAllBtn');
+ const top=document.getElementById('newsAllBtnTop');
+ if(!list||!btn)return;
+ const card=x=>`<article class="news-item" onclick="openNewsArticle(${Number(x.id)})">
+   ${x.image_url?`<img class="news-cover" src="${esc(x.image_url)}" alt="">`:''}
+   <span class="tag">${esc(x.tag||'NOVEDADES')}</span>
+   <h3>${esc(x.title)}</h3>
+   <small>📅 ${esc(x.date||'Hoy')}</small>
+   <span class="news-read">Leer completa →</span>
+ </article>`;
+ const expanded=list.classList.toggle('expanded');
+ list.innerHTML=(expanded?news:news.slice(0,3)).map(card).join('');
+ btn.textContent=expanded?'Mostrar menos ↑':'Ver todas las noticias →';
+ if(top)top.textContent=expanded?'Mostrar menos ↑':'Ver todas →';
 }
 function openNewsArticle(id){
  const x=(window.rezzNewsData||[]).find(n=>Number(n.id)===Number(id)); if(!x)return;
