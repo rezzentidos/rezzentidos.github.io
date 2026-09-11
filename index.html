@@ -169,13 +169,61 @@ button{cursor:pointer}
  .news-list{grid-template-columns:repeat(3,1fr)}
  .cards{grid-template-columns:repeat(4,1fr)}
 }
+
+.menu-overlay,.info-overlay{
+  position:fixed;inset:0;background:#120323cc;z-index:90;
+  display:none;align-items:flex-start;justify-content:center;padding:18px 10px;overflow:auto
+}
+.menu-overlay.open,.info-overlay.open{display:flex}
+.menu-panel,.info-panel{
+  width:min(720px,100%);background:#fff;border-radius:20px;padding:18px;
+  box-shadow:0 20px 60px #0008;color:var(--ink);margin:auto
+}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:12px}
+.menu-item{
+  border:1px solid var(--line);background:#fcfaff;color:var(--ink);
+  border-radius:13px;padding:13px;text-align:left;font-weight:900
+}
+.menu-item span{font-size:22px;display:block;margin-bottom:5px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.panel-head h2{margin:0;font-size:20px}
+.close-panel{
+  border:0;background:#eee5ff;color:#5a12b5;border-radius:10px;
+  width:40px;height:40px;font-size:20px
+}
+.guide-list{display:grid;gap:9px;margin-top:12px}
+.guide-box{background:#f8f5ff;border:1px solid var(--line);border-radius:13px;padding:13px}
+.guide-box h3{margin:0 0 6px;font-size:15px}
+.guide-box p{margin:0;color:#675a79;font-size:12px;line-height:1.45}
+.code-list{display:grid;gap:9px;margin-top:12px}
+.code-public{
+  background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px
+}
+.code-public b{font-size:15px;letter-spacing:.4px}
+.code-public small{display:block;color:#75698c;margin-top:4px}
+.community-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.community-posts{display:grid;gap:9px;margin-top:12px}
+.community-post{
+  background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px
+}
+.community-post b{font-size:13px}
+.community-post p{margin:6px 0 0;color:#675a79;font-size:12px;line-height:1.4}
+.helper{
+  background:#f5edff;border-radius:11px;padding:10px;font-size:11px;
+  line-height:1.4;color:#665575;margin-top:10px
+}
+@media(max-width:430px){
+  .menu-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="topbar">
-    <button class="icon-btn" aria-label="Menú" onclick="toast('Menú próximamente')">☰</button>
+    <button class="icon-btn" aria-label="Menú" onclick="openMenu()">☰</button>
     <div class="brand"><div class="logo">Rezz<span>entidos</span></div></div>
     <div style="display:flex;gap:7px">
       <button class="icon-btn" aria-label="Buscar" onclick="document.getElementById('device').focus()">⌕</button>
@@ -199,7 +247,7 @@ button{cursor:pointer}
   <button class="shortcut" onclick="go('noticias')"><span class="ico">📰</span><b>Noticias</b></button>
   <button class="shortcut" onclick="go('codigos')"><span class="ico">🎁</span><b>Códigos</b></button>
   <button class="shortcut" onclick="go('configuraciones')"><span class="ico">⚙️</span><b>Configuraciones</b></button>
-  <button class="shortcut" onclick="toast('La comunidad estará disponible próximamente')"><span class="ico">👥</span><b>Comunidad</b></button>
+  <button class="shortcut" onclick="openCommunity()"><span class="ico">👥</span><b>Comunidad</b></button>
 </nav>
 
 <div class="container">
@@ -220,7 +268,7 @@ button{cursor:pointer}
 </section>
 
 <section class="section" id="sensibilidades">
- <div class="section-head"><h2>🎯 Sensibilidades</h2><button class="link" onclick="toast('Más sensibilidades próximamente')">Ver todas →</button></div>
+ <div class="section-head"><h2>🎯 Sensibilidades</h2><button class="link" onclick="go('sensibilidades');toast('Aquí puedes buscar todas las sensibilidades disponibles')">Ver todas →</button></div>
  <div class="sensi">
    <h2>Encuentra tu sensibilidad</h2>
    <p>Escribe tu teléfono y Rezzentidos buscará una configuración recomendada.</p>
@@ -240,25 +288,27 @@ button{cursor:pointer}
    <article class="card"><div class="big">🤖</div><h3>Android</h3><p>Sensibilidades recomendadas para Android.</p><button class="small-btn" onclick="setDevice('Android')">Buscar →</button></article>
    <article class="card"><div class="big"></div><h3>iPhone</h3><p>Ajustes para mejorar tu puntería.</p><button class="small-btn" onclick="setDevice('iPhone')">Buscar →</button></article>
    <article class="card"><div class="big">📱</div><h3>Por modelo</h3><p>Busca una configuración específica.</p><button class="small-btn" onclick="document.getElementById('device').focus()">Buscar →</button></article>
-   <article class="card"><div class="big">🎯</div><h3>Sensibilidad para rojo</h3><p>Consejos para mejorar el control.</p><button class="small-btn" onclick="toast('Guía de rojo próximamente')">Ver guía →</button></article>
+   <article class="card"><div class="big">🎯</div><h3>Sensibilidad para rojo</h3><p>Consejos para mejorar el control.</p><button class="small-btn" onclick="openGuide('red')">Ver guía →</button></article>
  </div>
 </section>
 
 <section class="section" id="codigos">
- <div class="section-head"><h2>🎁 Códigos de Free Fire</h2><button class="link" onclick="toast('Sección de códigos próximamente')">Ver todos →</button></div>
+ <div class="section-head"><h2>🎁 Códigos de Free Fire</h2><button class="link" onclick="renderPublicCodes()">Actualizar →</button></div>
  <div class="codes">
-   <div><h3>Canjea códigos y consigue recompensas</h3><p>Diamantes, skins y mucho más.</p><br><button class="cta" onclick="toast('Los códigos se agregarán próximamente')">Ver códigos →</button></div>
+   <div><h3>Canjea códigos y consigue recompensas</h3><p>Los códigos que agregues desde el panel aparecen aquí.</p><br><button class="cta" onclick="renderPublicCodes()">Ver códigos →</button></div>
    <div class="diamond">💎</div>
  </div>
+ <div id="publicCodes" class="code-list"></div>
+ <div class="helper">💡 Los códigos de Free Fire pueden caducar o tener límites de uso. Revisa su vigencia antes de canjearlos.</div>
 </section>
 
 <section class="section" id="configuraciones">
- <div class="section-head"><h2>⚙️ Configuraciones</h2><button class="link" onclick="toast('Más guías próximamente')">Ver todas →</button></div>
+ <div class="section-head"><h2>⚙️ Configuraciones</h2><button class="link" onclick="go('configuraciones');toast('Elige una guía para verla')">Ver todas →</button></div>
  <div class="cards">
-   <article class="card"><div class="big">🎛️</div><h3>HUD</h3><p>Diseños y layouts recomendados.</p><button class="small-btn" onclick="toast('Guía HUD próximamente')">Ver guía →</button></article>
-   <article class="card"><div class="big">🎯</div><h3>DPI</h3><p>Mejora tu precisión en el juego.</p><button class="small-btn" onclick="toast('Guía DPI próximamente')">Ver guía →</button></article>
-   <article class="card"><div class="big">🖥️</div><h3>Gráficos</h3><p>Ajustes para mejorar rendimiento.</p><button class="small-btn" onclick="toast('Guía de gráficos próximamente')">Ver guía →</button></article>
-   <article class="card"><div class="big">⚙️</div><h3>Ajustes generales</h3><p>Configuraciones para tu estilo.</p><button class="small-btn" onclick="toast('Guía de ajustes próximamente')">Ver guía →</button></article>
+   <article class="card"><div class="big">🎛️</div><h3>HUD</h3><p>Diseños y layouts recomendados.</p><button class="small-btn" onclick="openGuide('hud')">Ver guía →</button></article>
+   <article class="card"><div class="big">🎯</div><h3>DPI</h3><p>Mejora tu precisión en el juego.</p><button class="small-btn" onclick="openGuide('dpi')">Ver guía →</button></article>
+   <article class="card"><div class="big">🖥️</div><h3>Gráficos</h3><p>Ajustes para mejorar rendimiento.</p><button class="small-btn" onclick="openGuide('graphics')">Ver guía →</button></article>
+   <article class="card"><div class="big">⚙️</div><h3>Ajustes generales</h3><p>Configuraciones para tu estilo.</p><button class="small-btn" onclick="openGuide('general')">Ver guía →</button></article>
  </div>
 </section>
 
@@ -267,7 +317,7 @@ button{cursor:pointer}
    <span class="tag">COMUNIDAD</span>
    <h3>💜 Únete a Rezzentidos</h3>
    <p>Comparte tus sensibilidades, consejos y experiencias con otros jugadores.</p>
-   <button class="cta" onclick="toast('La comunidad estará disponible próximamente')">Entrar ahora →</button>
+   <button class="cta" onclick="toast('La comunidad estará disponible disponible')">Entrar ahora →</button>
  </div>
 </section>
 
@@ -279,9 +329,59 @@ button{cursor:pointer}
  <button class="nav" onclick="go('sensibilidades')"><span>🎯</span>Sensis</button>
  <button class="nav" onclick="go('noticias')"><span>📰</span>Noticias</button>
  <button class="nav" onclick="go('codigos')"><span>🎁</span>Códigos</button>
- <button class="nav" onclick="toast('Comunidad próximamente')"><span>👥</span>Comunidad</button>
+ <button class="nav" onclick="openCommunity()"><span>👥</span>Comunidad</button>
 </nav>
 
+
+
+<div id="menuOverlay" class="menu-overlay" aria-hidden="true">
+ <section class="menu-panel">
+  <div class="panel-head">
+   <h2>☰ Menú Rezzentidos</h2>
+   <button class="close-panel" onclick="closeMenu()">×</button>
+  </div>
+  <p style="color:#75698c;font-size:12px;margin:8px 0 0">Accede rápidamente a todas las secciones.</p>
+  <div class="menu-grid">
+   <button class="menu-item" onclick="closeMenu();go('inicio')"><span>⌂</span>Inicio</button>
+   <button class="menu-item" onclick="closeMenu();go('sensibilidades')"><span>🎯</span>Sensibilidades</button>
+   <button class="menu-item" onclick="closeMenu();go('noticias')"><span>📰</span>Noticias</button>
+   <button class="menu-item" onclick="closeMenu();go('codigos');renderPublicCodes()"><span>🎁</span>Códigos</button>
+   <button class="menu-item" onclick="closeMenu();go('configuraciones')"><span>⚙️</span>Configuraciones</button>
+   <button class="menu-item" onclick="closeMenu();openCommunity()"><span>👥</span>Comunidad</button>
+  </div>
+ </section>
+</div>
+
+<div id="infoOverlay" class="info-overlay" aria-hidden="true">
+ <section class="info-panel">
+  <div class="panel-head">
+   <h2 id="infoTitle">Guía</h2>
+   <button class="close-panel" onclick="closeInfo()">×</button>
+  </div>
+  <div id="infoBody" class="guide-list"></div>
+ </section>
+</div>
+
+<div id="communityOverlay" class="info-overlay" aria-hidden="true">
+ <section class="info-panel">
+  <div class="panel-head">
+   <h2>👥 Comunidad Rezzentidos</h2>
+   <button class="close-panel" onclick="closeCommunity()">×</button>
+  </div>
+  <p style="color:#75698c;font-size:12px;line-height:1.4">Comparte un consejo o configuración desde tu teléfono. Las publicaciones de esta versión se guardan en este dispositivo.</p>
+  <div class="form-grid">
+   <div class="field"><label>Tu nombre</label><input id="communityName" placeholder="Ej. Ale"></div>
+   <div class="field"><label>Teléfono / modelo</label><input id="communityModel" placeholder="Ej. Redmi Note 12"></div>
+   <div class="field full"><label>Consejo</label><textarea id="communityText" placeholder="Comparte tu sensibilidad, HUD o consejo..."></textarea></div>
+  </div>
+  <div class="community-actions">
+   <button class="admin-btn" onclick="addCommunityPost()">＋ Publicar</button>
+   <button class="admin-btn secondary" onclick="shareSite()">📤 Compartir Rezzentidos</button>
+  </div>
+  <div id="communityPosts" class="community-posts"></div>
+  <div class="helper">ℹ️ Para que la comunidad sea realmente pública entre todos los usuarios, después habría que conectar un servidor/base de datos. Esta versión ya permite probar las publicaciones localmente.</div>
+ </section>
+</div>
 
 <div id="adminOverlay" class="admin-overlay" aria-hidden="true">
  <section class="admin-panel">
@@ -339,7 +439,117 @@ button{cursor:pointer}
 <div id="toast" class="toast"></div>
 
 <script>
-function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+function go(id){
+ const el=document.getElementById(id);
+ if(el) el.scrollIntoView({behavior:'smooth'});
+}
+function openMenu(){
+ document.getElementById('menuOverlay').classList.add('open');
+ document.getElementById('menuOverlay').setAttribute('aria-hidden','false');
+}
+function closeMenu(){
+ document.getElementById('menuOverlay').classList.remove('open');
+ document.getElementById('menuOverlay').setAttribute('aria-hidden','true');
+}
+const guides={
+ red:{
+  title:'🎯 Guía de Punto rojo',
+  items:[
+   ['Sensibilidad','Empieza con Punto rojo entre 180 y 195 y ajusta de 2 en 2.'],
+   ['Control','Si la mira se va demasiado arriba, baja 3–5 puntos. Si cuesta subir a la cabeza, súbela 3–5.'],
+   ['Botón de disparo','Prueba entre 45% y 52% y elige el tamaño que te permita arrastrar cómodamente.']
+  ]
+ },
+ hud:{
+  title:'🎛️ Guía HUD',
+  items:[
+   ['Botón de disparo','Colócalo donde tu pulgar pueda arrastrar hacia arriba sin tapar la pantalla.'],
+   ['Transparencia','Usa una transparencia que permita ver enemigos y al mismo tiempo localizar el botón rápidamente.'],
+   ['Consejo','Practica el mismo HUD varios días antes de cambiarlo para crear memoria muscular.']
+  ]
+ },
+ dpi:{
+  title:'🎯 Guía DPI',
+  items:[
+   ['Qué es','El DPI modifica la escala y sensibilidad táctil del sistema; no existe un valor universal.'],
+   ['Inicio','Si tu teléfono lo permite, prueba un valor moderado y cambia poco a poco.'],
+   ['Estabilidad','Prioriza que el toque sea cómodo y estable antes que usar un DPI extremo.']
+  ]
+ },
+ graphics:{
+  title:'🖥️ Guía de gráficos',
+  items:[
+   ['Rendimiento','Si tienes tirones, baja la calidad gráfica y prioriza una tasa de FPS estable.'],
+   ['Calentamiento','Evita jugar mucho tiempo con el teléfono muy caliente; el rendimiento puede caer.'],
+   ['Batería','Cerrar apps en segundo plano puede ayudar a mantener el rendimiento.']
+  ]
+ },
+ general:{
+  title:'⚙️ Ajustes generales',
+  items:[
+   ['Sensibilidad','Usa la sensibilidad de Rezzentidos como punto de partida y ajústala a tu pantalla.'],
+   ['Práctica','Haz varias partidas de entrenamiento antes de decidir si una configuración funciona.'],
+   ['Importante','La mejor configuración depende del modelo, FPS, tamaño de pantalla y estilo de juego.']
+  ]
+ }
+};
+function openGuide(type){
+ const g=guides[type]||guides.general;
+ document.getElementById('infoTitle').textContent=g.title;
+ document.getElementById('infoBody').innerHTML=g.items.map(x=>`<div class="guide-box"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('');
+ document.getElementById('infoOverlay').classList.add('open');
+ document.getElementById('infoOverlay').setAttribute('aria-hidden','false');
+}
+function closeInfo(){
+ document.getElementById('infoOverlay').classList.remove('open');
+ document.getElementById('infoOverlay').setAttribute('aria-hidden','true');
+}
+function openCommunity(){
+ document.getElementById('communityOverlay').classList.add('open');
+ document.getElementById('communityOverlay').setAttribute('aria-hidden','false');
+ renderCommunityPosts();
+}
+function closeCommunity(){
+ document.getElementById('communityOverlay').classList.remove('open');
+ document.getElementById('communityOverlay').setAttribute('aria-hidden','true');
+}
+function shareSite(){
+ const data={title:'Rezzentidos',text:'Mira Rezzentidos: sensibilidades, noticias, códigos y configuraciones de Free Fire.',url:location.href};
+ if(navigator.share){navigator.share(data).catch(()=>{});}
+ else if(navigator.clipboard){navigator.clipboard.writeText(location.href);toast('Enlace copiado');}
+ else toast(location.href);
+}
+function addCommunityPost(){
+ const name=document.getElementById('communityName').value.trim()||'Jugador';
+ const model=document.getElementById('communityModel').value.trim()||'Free Fire';
+ const text=document.getElementById('communityText').value.trim();
+ if(!text){toast('Escribe un consejo');return;}
+ const posts=JSON.parse(localStorage.getItem('rezzentidos_community')||'[]');
+ posts.unshift({name,model,text,date:new Date().toLocaleDateString('es-EC')});
+ localStorage.setItem('rezzentidos_community',JSON.stringify(posts.slice(0,30)));
+ document.getElementById('communityText').value='';
+ renderCommunityPosts();
+ toast('Consejo publicado');
+}
+function renderCommunityPosts(){
+ const box=document.getElementById('communityPosts');
+ if(!box)return;
+ const posts=JSON.parse(localStorage.getItem('rezzentidos_community')||'[]');
+ box.innerHTML=posts.length?posts.map(p=>`<article class="community-post"><b>💜 ${esc(p.name)} · ${esc(p.model)}</b><small style="display:block;color:#8a7c9e;margin-top:3px">${esc(p.date)}</small><p>${esc(p.text)}</p></article>`).join(''):'<div class="no-result">Todavía no hay consejos guardados en este dispositivo.</div>';
+}
+function renderPublicCodes(){
+ const box=document.getElementById('publicCodes');
+ if(!box)return;
+ const codes=adminData.codes||[];
+ box.innerHTML=codes.length?codes.map((x,i)=>`<div class="code-public"><div><b>🎁 ${esc(x.code)}</b><small>${esc(x.reward)}</small></div><button class="small-btn" onclick="copyCode(${i})">Copiar</button></div>`).join(''):'<div class="no-result">Todavía no hay códigos publicados. Puedes agregarlos desde ⚙️ Administración.</div>';
+}
+function copyCode(i){
+ const code=(adminData.codes||[])[i]?.code;
+ if(!code)return;
+ if(navigator.clipboard){navigator.clipboard.writeText(code).then(()=>toast('Código copiado')).catch(()=>toast('Código: '+code));}
+ else toast('Código: '+code);
+}
+
 function toast(msg){
  const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
  clearTimeout(window._t); window._t=setTimeout(()=>el.classList.remove('show'),2200);
@@ -426,10 +636,10 @@ function addCode(){
  const code=aCode.value.trim(), reward=aReward.value.trim();
  if(!code){toast('Escribe un código');return;}
  adminData.codes.unshift({code,reward:reward||'Recompensa de Free Fire'});
- saveAdmin();renderAdmin();aCode.value='';aReward.value='';toast('Código guardado');
+ saveAdmin();renderAdmin();renderPublicCodes();aCode.value='';aReward.value='';toast('Código guardado');
 }
 function del(type,index){
- adminData[type].splice(index,1);saveAdmin();renderAdmin();toast('Elemento eliminado');
+ adminData[type].splice(index,1);saveAdmin();renderAdmin();renderPublicCodes();toast('Elemento eliminado');
 }
 function renderAdmin(){
  sensiAdminList.innerHTML=adminData.sensi.length?adminData.sensi.map((x,i)=>
@@ -443,6 +653,7 @@ function renderAdmin(){
   :'<div class="no-result">Aún no has agregado códigos.</div>';
 }
 
+renderPublicCodes();
 </script>
 </body>
 </html>
