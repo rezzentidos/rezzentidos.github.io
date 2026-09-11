@@ -344,6 +344,12 @@ button{cursor:pointer}
   .container{padding:0 18px}
 }
 
+
+.csv-import-box{margin-top:12px;padding:12px;border:1px dashed #cbb3ee;border-radius:14px;background:#faf7ff}
+.csv-title{font-weight:900;color:#4b2a70;font-size:13px;margin-bottom:4px}
+.csv-help{font-size:11px;line-height:1.4;color:#776a92;margin-bottom:9px}
+.csv-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 13px;border-radius:11px;background:#eee3ff;color:#6517c9;font-size:12px;font-weight:900;cursor:pointer}
+.csv-import-box .admin-status{margin-top:8px}
 </style>
 </head>
 <body>
@@ -567,6 +573,13 @@ button{cursor:pointer}
     <div class="field"><label>Botón de disparo %</label><input id="aFire" type="number" min="0" max="100" value="48"></div>
    </div>
    <div class="admin-actions"><button class="admin-btn" onclick="addSensi()">＋ Guardar sensibilidad</button></div>
+   <div class="csv-import-box">
+    <div class="csv-title">📄 Agregar varias de golpe</div>
+    <div class="csv-help">Selecciona un archivo CSV con: Modelo, DPI, General, Red, 2x, 4x, AWM, Fire.</div>
+    <label class="csv-btn" for="sensiCsvInput">📄 Seleccionar CSV</label>
+    <input id="sensiCsvInput" type="file" accept=".csv,text/csv" onchange="importSensiCsv(event)" hidden>
+    <div id="sensiImportStatus" class="admin-status"></div>
+   </div>
    <div id="sensiAdminList" class="admin-list"></div>
   </div>
 
