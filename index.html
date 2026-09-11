@@ -51,7 +51,7 @@ button{cursor:pointer}
 .badge{display:inline-block;background:#a832ff;border:1px solid #d99aff;padding:6px 12px;border-radius:999px;font-weight:800;font-size:12px}
 .hero h1{font-size:42px;line-height:.94;margin:12px 0 8px;font-style:italic}
 .hero p{margin:0 0 17px;color:#f0e9ff;line-height:1.45}
-.cta{
+.cta{text-decoration:none;display:inline-block;
   border:0;border-radius:12px;padding:13px 18px;font-weight:900;color:white;
   background:linear-gradient(90deg,#a52cff,#6412e8);
   box-shadow:0 8px 18px #7d1dff66;
@@ -236,9 +236,6 @@ button{cursor:pointer}
 .code-public small{display:block;color:#75698c;margin-top:4px}
 
 
-.social-float{position:fixed;right:16px;bottom:88px;width:60px;height:60px;border:2px solid rgba(255,255,255,.75);border-radius:50%;background:linear-gradient(145deg,#7b18e8,#3a0b73);color:#fff;box-shadow:0 10px 28px rgba(49,16,82,.35);z-index:90;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.social-float-r{font-size:25px;font-weight:1000;font-style:italic;line-height:1}
-.social-float-icon{font-size:18px;margin-left:-2px;margin-top:-17px;font-weight:900}
 .social-modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center}
 .social-modal.open{display:flex}
 .social-modal-backdrop{position:absolute;inset:0;background:rgba(20,7,32,.68);backdrop-filter:blur(3px)}
@@ -329,7 +326,6 @@ button{cursor:pointer}
   .bottom{position:fixed;top:70px;bottom:auto;left:50%;right:auto;transform:translateX(-50%);width:min(900px,calc(100% - 40px));margin:0;border-radius:16px;padding:7px;box-shadow:0 8px 25px #24104c22;grid-template-columns:repeat(5,1fr);background:#16052e}
   .bottom .nav{font-size:11px;padding:7px 4px}
   .bottom .nav span{font-size:20px}
-  .social-float{right:28px;bottom:28px}
 }
 @media(min-width:1100px){
   .top{padding-left:40px;padding-right:40px}
@@ -441,10 +437,6 @@ button{cursor:pointer}
 </section>
 
 
-<button class="social-float" aria-label="Abrir redes de Rezzentidos" onclick="openSocials()">
-  <span class="social-float-r">R</span>
-  <span class="social-float-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.2"></circle><circle cx="18" cy="6" r="2.2"></circle><circle cx="18" cy="18" r="2.2"></circle><path d="M8 11l7.8-4M8 13l7.8 4"></path></svg></span>
-</button>
 
 <div class="news-article-modal" id="newsArticleModal" aria-hidden="true">
   <div class="news-article-backdrop" onclick="closeNewsArticle()"></div>
@@ -454,28 +446,12 @@ button{cursor:pointer}
   </div>
 </div>
 
-<div class="social-modal" id="socialModal" aria-hidden="true">
-  <div class="social-modal-backdrop" onclick="closeSocials()"></div>
-  <div class="social-modal-panel">
-    <button class="modal-close" aria-label="Cerrar" onclick="closeSocials()">×</button>
-    <div class="social-modal-title"><span class="social-mini-r">R</span><div><h2>Mis redes</h2><p>Sigue a Rezzentidos</p></div></div>
-    <div class="social-links">
-      <a class="social-link" href="https://whatsapp.com/channel/0029Vb8dUkn1yT2BnUDkNK3C" target="_blank" rel="noopener"><div><span>💬 Canal de WhatsApp</span><small>Únete al canal oficial de Rezzentidos</small></div><b>→</b></a>
-      <a class="social-link" href="https://youtube.com/@soyrezzen" target="_blank" rel="noopener"><div><span>▶️ YouTube</span><small>Canal de Soy Rezzen</small></div><b>→</b></a>
-      <a class="social-link" href="https://www.tiktok.com/@soyrezzen" target="_blank" rel="noopener"><div><span>🎵 TikTok</span><small>@soyrezzen</small></div><b>→</b></a>
-      <a class="social-link" href="https://www.facebook.com/share/19N7n6qin1/" target="_blank" rel="noopener"><div><span>📘 Facebook</span><small>Perfil de Rezzentidos</small></div><b>→</b></a>
-      <a class="social-link" href="https://www.instagram.com/soyrezzen" target="_blank" rel="noopener"><div><span>📸 Instagram</span><small>@soyrezzen</small></div><b>→</b></a>
-      <a class="social-link" href="https://discord.gg/bMZ7kQHMJ" target="_blank" rel="noopener"><div><span>🎮 Discord</span><small>Únete a la comunidad de Rezzentidos</small></div><b>→</b></a>
-    </div>
-  </div>
-</div>
-
 <section class="section">
  <div class="news-main" style="min-height:auto">
    <span class="tag">COMUNIDAD</span>
    <h3>💜 Únete a Rezzentidos</h3>
    <p>Comparte tus sensibilidades, consejos y experiencias con otros jugadores.</p>
-   <button class="cta" onclick="openCommunity()">Entrar ahora →</button>
+   <a class="cta" href="https://whatsapp.com/channel/0029Vb8dUkn1yT2BnUDkNK3C" target="_blank" rel="noopener">Entrar ahora →</a>
  </div>
 </section>
 
@@ -498,14 +474,26 @@ button{cursor:pointer}
    <h2>☰ Menú Rezzentidos</h2>
    <button class="close-panel" onclick="closeMenu()">×</button>
   </div>
-  <p style="color:#75698c;font-size:12px;margin:8px 0 0">Accede rápidamente a todas las secciones.</p>
+  <p style="color:#75698c;font-size:12px;margin:8px 0 0">Aquí encontrarás opciones extra y ayuda de Rezzentidos.</p>
   <div class="menu-grid">
-   <button class="menu-item" onclick="closeMenu();go('inicio')"><span>⌂</span>Inicio</button>
-   <button class="menu-item" onclick="closeMenu();go('sensibilidades')"><span>🎯</span>Sensibilidades</button>
-   <button class="menu-item" onclick="closeMenu();go('noticias')"><span>📰</span>Noticias</button>
-   <button class="menu-item" onclick="closeMenu();go('codigos');renderPublicCodes()"><span>🎁</span>Códigos</button>
-   <button class="menu-item" onclick="closeMenu();go('configuraciones')"><span>⚙️</span>Configuraciones</button>
-   <button class="menu-item" onclick="closeMenu();openCommunity()"><span>👥</span>Comunidad</button>
+   <button class="menu-item" onclick="closeMenu();openMenuInfo('📘 Guías Rezzentidos',[
+    ['🎯 Sensibilidades','Busca tu modelo y elige una configuración con DPI, sin DPI o ambas.'],
+    ['🎛️ HUD','Aprende a colocar el botón de disparo para arrastrar cómodamente.'],
+    ['🎯 DPI','Conoce para qué sirve el DPI y cómo probarlo de forma estable.'],
+    ['🖥️ Gráficos','Consejos para mantener un rendimiento y FPS estables.']
+   ])"><span>📘</span>Guías</button>
+   <button class="menu-item" onclick="closeMenu();openMenuInfo('❓ Ayuda',[
+    ['🔎 Buscar sensibilidad','Escribe el modelo de tu celular y pulsa buscar.'],
+    ['📱 Con DPI / Sin DPI','Cambia la opción según la configuración que quieras usar.'],
+    ['📰 Noticias','Toca una noticia para leer el contenido completo.'],
+    ['💜 Comunidad','El botón Entrar ahora te lleva directamente al canal de WhatsApp.']
+   ])"><span>❓</span>Ayuda</button>
+   <button class="menu-item" onclick="closeMenu();openMenuInfo('💜 Sobre Rezzentidos',[
+    ['🎮 ¿Qué es?','Un espacio de Rezzentidos para encontrar sensibilidades, noticias, códigos y configuraciones de Free Fire.'],
+    ['🎯 Sensibilidades','Las configuraciones son puntos de partida y pueden ajustarse según el dispositivo y el estilo de juego.'],
+    ['📢 Comunidad','Únete al canal de WhatsApp desde el apartado Comunidad.']
+   ])"><span>💜</span>Sobre Rezzentidos</button>
+   <button class="menu-item" onclick="closeMenu();openAdmin()"><span>⚙️</span>Administración</button>
   </div>
  </section>
 </div>
@@ -687,6 +675,12 @@ const guides={
   ]
  }
 };
+function openMenuInfo(title,items){
+ document.getElementById('infoTitle').textContent=title;
+ document.getElementById('infoBody').innerHTML=items.map(x=>`<div class="guide-box"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('');
+ document.getElementById('infoOverlay').classList.add('open');
+ document.getElementById('infoOverlay').setAttribute('aria-hidden','false');
+}
 function openGuide(type){
  const g=guides[type]||guides.general;
  document.getElementById('infoTitle').textContent=g.title;
@@ -1118,9 +1112,7 @@ renderPublicCodes();
 renderPublicNews();
 
 
-function openSocials(){const m=document.getElementById('socialModal');if(!m)return;m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
-function closeSocials(){const m=document.getElementById('socialModal');if(!m)return;m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeNewsArticle();closeSocials();}})
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeNewsArticle();}})
 </script>
 </body>
 </html>
