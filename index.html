@@ -802,50 +802,80 @@ async function buscar(){
  const input=document.getElementById('device');
  const result=document.getElementById('result');
  const value=input.value.trim().toLowerCase();
- if(!value){result.hidden=false;result.innerHTML='<div class="no-result">Escribe el modelo de tu teléfono para buscar una configuración.</div>';return;}
+ if(!value){
+  result.hidden=false;
+  result.innerHTML='<div class="no-result">Escribe el modelo de tu teléfono para buscar una configuración.</div>';
+  return;
+ }
+
  let pool=[...sensitivities];
  try{
    const {data,error}=await supabaseClient.from('sensitivities').select('*').order('created_at',{ascending:false}).limit(200);
-   if(!error && Array.isArray(data) && data.length){
-     pool=[...data,...sensitivities];
-   }
+   if(!error && Array.isArray(data) && data.length) pool=[...data,...sensitivities];
  }catch(e){ console.warn('No se pudo consultar sensibilidades públicas',e); }
+
  const matches=pool.filter(x=>{
    const keys=Array.isArray(x.keys)&&x.keys.length?x.keys:[String(x.name||'').toLowerCase()];
-   const nameMatch=keys.some(k=>String(k).toLowerCase().includes(value)||value.includes(String(k).toLowerCase())) || String(x.name||'').toLowerCase().includes(value);
-   if(!nameMatch)return false;
-   const hasDpi=String(x.dpi??'').trim() && String(x.dpi).trim().toLowerCase()!=='n/a';
-   return sensiMode==='both' ? true : sensiMode==='dpi' ? hasDpi : !hasDpi;
+   return keys.some(k=>String(k).toLowerCase().includes(value)||value.includes(String(k).toLowerCase()))
+     || String(x.name||'').toLowerCase().includes(value);
  });
+
+ // Agrupar por modelo para que "Con DPI" y "Sin DPI" nunca aparezcan como dos tarjetas.
+ const groups=new Map();
+ matches.forEach(item=>{
+   const name=String(item.name||'').trim();
+   const key=name.toLowerCase();
+   const hasDpi=String(item.dpi??'').trim() && String(item.dpi).trim().toLowerCase()!=='n/a';
+   if(!groups.has(key)) groups.set(key,{name,noDpi:null,dpi:null});
+   const g=groups.get(key);
+   if(hasDpi && !g.dpi) g.dpi=item;
+   if(!hasDpi && !g.noDpi) g.noDpi=item;
+ });
+
+ let grouped=[...groups.values()];
+ grouped=grouped.map(g=>({
+   ...g,
+   configs:sensiMode==='both'
+     ? [g.noDpi,g.dpi].filter(Boolean)
+     : sensiMode==='dpi'
+       ? (g.dpi?[g.dpi]:[])
+       : (g.noDpi?[g.noDpi]:[])
+ })).filter(g=>g.configs.length);
+
  result.hidden=false;
- if(!matches.length){
+ if(!grouped.length){
    const modeText=sensiMode==='dpi'?'con DPI':sensiMode==='no-dpi'?'sin DPI':'en ambos modos';
    result.innerHTML='<div class="no-result"><b>No encontramos '+esc(input.value)+' '+modeText+'.</b><br>Prueba otro modelo o cambia entre Sin DPI, Con DPI y Ambas.</div>';
    toast('Configuración no encontrada');
    return;
  }
- const list=matches.slice(0,3);
- result.innerHTML=list.map(item=>{
-   const hasDpi=String(item.dpi??'').trim() && String(item.dpi).trim().toLowerCase()!=='n/a';
-   return `
-   <div class="result-card" style="margin-bottom:10px">
-    <div class="result-title"><b>🎯 ${esc(item.name)}</b><span class="score">RECOMENDADA</span></div>
-    <span class="result-mode">${hasDpi?'⚡ CON DPI':'📱 SIN DPI'}</span>
-    <div class="stats">
-      <div class="stat"><span>General</span><b>${item.general}</b></div>
-      <div class="stat"><span>Punto rojo</span><b>${item.red}</b></div>
-      <div class="stat"><span>Mira 2x</span><b>${item.x2}</b></div>
-      <div class="stat"><span>Mira 4x</span><b>${item.x4}</b></div>
-      <div class="stat"><span>AWM</span><b>${item.awm}</b></div>
-      <div class="stat"><span>DPI</span><b>${hasDpi?esc(item.dpi):'No usar'}</b></div>
-      <div class="stat"><span>Botón disparo</span><b>${item.fire}%</b></div>
-    </div>
+
+ const stat=(label,val)=>`<div class="stat"><span>${label}</span><b>${esc(val)}</b></div>`;
+ const card=(g)=>{
+   const configs=g.configs;
+   return `<div class="result-card" style="margin-bottom:10px">
+    <div class="result-title"><b>🎯 ${esc(g.name)}</b><span class="score">RECOMENDADA</span></div>
+    ${configs.map(item=>{
+      const hasDpi=String(item.dpi??'').trim() && String(item.dpi).trim().toLowerCase()!=='n/a';
+      return `<div class="sensi-config" style="margin-top:8px;padding:8px 0 ${configs.length>1?'10px':'2px'};${configs.length>1?'border-bottom:1px solid #eee5f7':''}">
+       <span class="result-mode">${hasDpi?'⚡ CON DPI':'📱 SIN DPI'}</span>
+       <div class="stats">
+        ${stat('General',item.general)}
+        ${stat('Punto rojo',item.red)}
+        ${stat('Mira 2x',item.x2)}
+        ${stat('Mira 4x',item.x4)}
+        ${stat('AWM',item.awm)}
+        ${stat('DPI',hasDpi?item.dpi:'No usar')}
+        ${stat('Botón disparo',item.fire+'%')}
+       </div>
+      </div>`;
+    }).join('')}
     <p class="result-note">💜 Configuración inicial de Rezzentidos. Ajusta de 2–5 puntos según tu estilo, FPS y tamaño de pantalla.</p>
    </div>`;
- }).join('');
- toast(matches.length>1?'Encontramos varias configuraciones':'Sensibilidad encontrada');
+ };
+ result.innerHTML=grouped.slice(0,3).map(card).join('');
+ toast(grouped.length>1?'Encontramos varias configuraciones':'Sensibilidad encontrada');
 }
-
 let adminSession=null;
 let adminNews=[];
 let adminCodes=[];
