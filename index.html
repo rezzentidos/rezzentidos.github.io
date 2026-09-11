@@ -204,6 +204,21 @@ button{cursor:pointer}
 .code-public b{font-size:15px;letter-spacing:.4px}
 .code-public small{display:block;color:#75698c;margin-top:4px}
 
+
+.social-float{position:fixed;right:16px;bottom:88px;width:60px;height:60px;border:2px solid rgba(255,255,255,.75);border-radius:50%;background:linear-gradient(145deg,#7b18e8,#3a0b73);color:#fff;box-shadow:0 10px 28px rgba(49,16,82,.35);z-index:90;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.social-float-r{font-size:25px;font-weight:1000;font-style:italic;line-height:1}
+.social-float-icon{font-size:18px;margin-left:-2px;margin-top:-17px;font-weight:900}
+.social-modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center}
+.social-modal.open{display:flex}
+.social-modal-backdrop{position:absolute;inset:0;background:rgba(20,7,32,.68);backdrop-filter:blur(3px)}
+.social-modal-panel{position:relative;width:min(100%,520px);max-height:82vh;overflow:auto;background:#fff;border-radius:24px 24px 0 0;padding:20px;box-shadow:0 -12px 35px rgba(20,7,32,.3)}
+.social-modal-title{display:flex;align-items:center;gap:12px;margin:0 42px 14px 0}
+.social-modal-title h2{margin:0;color:#241044;font-size:24px}
+.social-modal-title p{margin:2px 0 0;color:#75698c;font-size:13px}
+.social-mini-r{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#7b18e8,#3a0b73);color:#fff;font-weight:1000;font-size:22px;font-style:italic}
+.social-modal-panel .social-links{margin-top:0}
+.social-modal-panel .social-link{border:1px solid var(--line);box-shadow:0 2px 8px rgba(49,16,82,.05)}
+
 .social-card{
   margin:22px 0 10px;
   background:linear-gradient(135deg,#241044,#6519b8);
@@ -337,41 +352,26 @@ button{cursor:pointer}
 </section>
 
 
-<section class="social-card" id="redes">
-  <h2>📲 Mis redes</h2>
-  <p>Sigue a Rezzentidos y recibe novedades, códigos y contenido de Free Fire.</p>
-  <div class="social-links">
-    <a class="social-link" href="https://whatsapp.com/channel/0029Vb8dUkn1yT2BnUDkNK3C" target="_blank" rel="noopener">
-      <div><span>💬 Canal de WhatsApp</span><small>Únete al canal oficial de Rezzentidos</small></div>
-      <b>→</b>
-    </a>
+<button class="social-float" aria-label="Abrir redes de Rezzentidos" onclick="openSocials()">
+  <span class="social-float-r">R</span>
+  <span class="social-float-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.2"></circle><circle cx="18" cy="6" r="2.2"></circle><circle cx="18" cy="18" r="2.2"></circle><path d="M8 11l7.8-4M8 13l7.8 4"></path></svg></span>
+</button>
 
-    <a class="social-link" href="https://youtube.com/@soyrezzen" target="_blank" rel="noopener">
-      <div><span>▶️ YouTube</span><small>Canal de Soy Rezzen</small></div>
-      <b>→</b>
-    </a>
-
-    <a class="social-link" href="https://www.tiktok.com/@soyrezzen" target="_blank" rel="noopener">
-      <div><span>🎵 TikTok</span><small>@soyrezzen</small></div>
-      <b>→</b>
-    </a>
-
-    <a class="social-link" href="https://www.facebook.com/share/19N7n6qin1/" target="_blank" rel="noopener">
-      <div><span>📘 Facebook</span><small>Perfil de Rezzentidos</small></div>
-      <b>→</b>
-    </a>
-
-    <a class="social-link" href="https://www.instagram.com/soyrezzen" target="_blank" rel="noopener">
-      <div><span>📸 Instagram</span><small>@soyrezzen</small></div>
-      <b>→</b>
-    </a>
-
-    <a class="social-link" href="https://discord.gg/bMZ7kQHMJ" target="_blank" rel="noopener">
-      <div><span>🎮 Discord</span><small>Únete a la comunidad de Rezzentidos</small></div>
-      <b>→</b>
-    </a>
+<div class="social-modal" id="socialModal" aria-hidden="true">
+  <div class="social-modal-backdrop" onclick="closeSocials()"></div>
+  <div class="social-modal-panel">
+    <button class="modal-close" aria-label="Cerrar" onclick="closeSocials()">×</button>
+    <div class="social-modal-title"><span class="social-mini-r">R</span><div><h2>Mis redes</h2><p>Sigue a Rezzentidos</p></div></div>
+    <div class="social-links">
+      <a class="social-link" href="https://whatsapp.com/channel/0029Vb8dUkn1yT2BnUDkNK3C" target="_blank" rel="noopener"><div><span>💬 Canal de WhatsApp</span><small>Únete al canal oficial de Rezzentidos</small></div><b>→</b></a>
+      <a class="social-link" href="https://youtube.com/@soyrezzen" target="_blank" rel="noopener"><div><span>▶️ YouTube</span><small>Canal de Soy Rezzen</small></div><b>→</b></a>
+      <a class="social-link" href="https://www.tiktok.com/@soyrezzen" target="_blank" rel="noopener"><div><span>🎵 TikTok</span><small>@soyrezzen</small></div><b>→</b></a>
+      <a class="social-link" href="https://www.facebook.com/share/19N7n6qin1/" target="_blank" rel="noopener"><div><span>📘 Facebook</span><small>Perfil de Rezzentidos</small></div><b>→</b></a>
+      <a class="social-link" href="https://www.instagram.com/soyrezzen" target="_blank" rel="noopener"><div><span>📸 Instagram</span><small>@soyrezzen</small></div><b>→</b></a>
+      <a class="social-link" href="https://discord.gg/bMZ7kQHMJ" target="_blank" rel="noopener"><div><span>🎮 Discord</span><small>Únete a la comunidad de Rezzentidos</small></div><b>→</b></a>
+    </div>
   </div>
-</section>
+</div>
 
 <section class="section">
  <div class="news-main" style="min-height:auto">
@@ -433,6 +433,13 @@ button{cursor:pointer}
   <div class="form-grid">
    <div class="field"><label>Tu nombre</label><input id="communityName" placeholder="Ej. Ale"></div>
    <div class="field"><label>Teléfono / modelo</label><input id="communityModel" placeholder="Ej. Redmi Note 12"></div>
+   <div class="field"><label>General</label><input id="communityGeneral" type="number" min="0" max="200" placeholder="Ej. 190"></div>
+   <div class="field"><label>Punto rojo</label><input id="communityRed" type="number" min="0" max="200" placeholder="Ej. 188"></div>
+   <div class="field"><label>Mira 2x</label><input id="communityX2" type="number" min="0" max="200" placeholder="Ej. 185"></div>
+   <div class="field"><label>Mira 4x</label><input id="communityX4" type="number" min="0" max="200" placeholder="Ej. 178"></div>
+   <div class="field"><label>AWM</label><input id="communityAwm" type="number" min="0" max="200" placeholder="Ej. 92"></div>
+   <div class="field"><label>DPI</label><input id="communityDpi" type="text" maxlength="20" placeholder="Ej. 500"></div>
+   <div class="field"><label>Botón de disparo %</label><input id="communityFire" type="number" min="0" max="100" placeholder="Ej. 48"></div>
    <div class="field full"><label>Consejo</label><textarea id="communityText" placeholder="Comparte tu sensibilidad, HUD o consejo..."></textarea></div>
   </div>
   <div class="community-actions">
@@ -598,17 +605,29 @@ function shareSite(){
 async function addCommunityPost(){
  const name=document.getElementById('communityName').value.trim()||'Jugador';
  const model=document.getElementById('communityModel').value.trim()||'Free Fire';
- const text=document.getElementById('communityText').value.trim();
- if(!text){toast('Escribe un consejo');return;}
- if(name.length>40 || model.length>60 || text.length>500){toast('Reduce el texto: nombre 40, modelo 60, consejo 500 caracteres');return;}
+ const general=document.getElementById('communityGeneral').value.trim();
+ const red=document.getElementById('communityRed').value.trim();
+ const x2=document.getElementById('communityX2').value.trim();
+ const x4=document.getElementById('communityX4').value.trim();
+ const awm=document.getElementById('communityAwm').value.trim();
+ const dpi=document.getElementById('communityDpi').value.trim();
+ const fire=document.getElementById('communityFire').value.trim();
+ const advice=document.getElementById('communityText').value.trim();
+ const hasValues=[general,red,x2,x4,awm,dpi,fire].some(Boolean);
+ if(!advice && !hasValues){toast('Agrega una configuración o escribe un consejo');return;}
+ if(name.length>40 || model.length>60 || advice.length>500){toast('Reduce el texto: nombre 40, modelo 60, consejo 500 caracteres');return;}
+ const values=[general,red,x2,x4,awm,dpi,fire];
+ if(values.some(v=>v && !/^\d+(\.\d+)?$/.test(v))){toast('Los valores de sensibilidad deben ser números');return;}
+ const sensitivity=hasValues?`🎯 Configuración\nGeneral: ${general||'—'} · Punto rojo: ${red||'—'} · Mira 2x: ${x2||'—'} · Mira 4x: ${x4||'—'} · AWM: ${awm||'—'} · DPI: ${dpi||'—'} · Botón: ${fire?fire+'%':'—'}`:'';
+ const text=[sensitivity,advice?`💡 Consejo\n${advice}`:''].filter(Boolean).join('\n\n');
  const button=document.querySelector('#communityOverlay .community-actions .admin-btn');
  if(button){button.disabled=true;button.textContent='Publicando…';}
  const {error}=await supabaseClient.from('community_posts').insert({name,model,text});
  if(button){button.disabled=false;button.textContent='＋ Publicar';}
  if(error){console.error(error);toast('No se pudo publicar. Revisa la conexión.');return;}
- document.getElementById('communityText').value='';
+ ['communityGeneral','communityRed','communityX2','communityX4','communityAwm','communityDpi','communityFire','communityText'].forEach(id=>document.getElementById(id).value='');
  await renderCommunityPosts();
- toast('Consejo publicado para toda la comunidad 💜');
+ toast('Configuración publicada para toda la comunidad 💜');
 }
 async function renderCommunityPosts(){
  const box=document.getElementById('communityPosts');
@@ -812,6 +831,9 @@ checkAdminSession();
 renderPublicCodes();
 renderPublicNews();
 
+
+function openSocials(){const m=document.getElementById('socialModal');if(!m)return;m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
+function closeSocials(){const m=document.getElementById('socialModal');if(!m)return;m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}
 </script>
 </body>
 </html>
